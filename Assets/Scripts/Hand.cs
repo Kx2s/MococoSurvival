@@ -20,10 +20,8 @@ public class Hand : MonoBehaviour
         player = GetComponentsInParent<SpriteRenderer>()[1];
     }
 
-    void LateUpdate ()
+    public void setHand (bool isReverse)
     {
-        bool isReverse = player.flipX;
-
         if (isLeft) {
             transform.localRotation = isReverse? leftRotReverse : leftRot;
             spriter.flipY = isReverse;

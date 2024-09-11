@@ -1,10 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-
     bool isLive = false;
     Animator anim;
     Rigidbody2D target;
@@ -44,19 +44,11 @@ public class Enemy : MonoBehaviour
             return;
         if (!isLive || anim.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
             return;
-            
+        
         Vector2 dirVec = target.position - rigid.position;
         Vector2 nextVec = dirVec.normalized * speed * Time.fixedDeltaTime;
         rigid.MovePosition(rigid.position + nextVec);
         rigid.velocity = Vector2.zero;
-    }
-
-    void LateUpdate()
-    {
-        if (!GameManager.instance.isLive)
-            return;
-        if (!isLive)
-            return;
         spriter.flipX = target.position.x < rigid.position.x;
     }
 
@@ -86,8 +78,7 @@ public class Enemy : MonoBehaviour
             coll.enabled = false;
             spriter.sortingOrder = 1;
             anim.SetBool("Dead", true);
-            GameManager.instance.kill++;
-            GameManager.instance.GetExp();
+            GameManager.instance.exp = 1;
 
             if (GameManager.instance.isLive)
                 AudioManager.instance.PlaySfx(AudioManager.Sfx.Dead);

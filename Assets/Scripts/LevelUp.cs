@@ -32,6 +32,7 @@ public class LevelUp : MonoBehaviour
 
     public void Select(int idx) 
     {
+        print("Select "+idx);
         items[idx].OnClick();
     }
 

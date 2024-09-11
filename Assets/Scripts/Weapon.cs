@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    float timer;
     Player player;
+    WaitForSeconds wait;
 
     public int id;
     public int prefabId;
@@ -20,28 +19,36 @@ public class Weapon : MonoBehaviour
         player = GameManager.instance.player;
     }
 
-    void Update()
+    private void Start()
     {
-        if (!GameManager.instance.isLive)
-            return;
-            
-        switch (id) {
+        print(id);
+        switch (id)
+        {
             case 0:
-                transform.Rotate(Vector3.back * speed * Time.deltaTime);
+                StartCoroutine(Shovel());
                 break;
-
             default:
-                timer += Time.deltaTime;
-
-                if (timer > speed) {
-                    timer = 0f;
-                    Fire();
-                }
+                StartCoroutine(Gun());
                 break;
         }
+    }
 
-        if (Input.GetButtonDown("Jump")){
-            LevelUp(10, 1);
+    IEnumerator Shovel()
+    {
+        WaitForSeconds waitShovel = new WaitForSeconds(.01f);
+        while (true)
+        {
+            transform.Rotate(Vector3.back * speed * Time.deltaTime);
+            yield return waitShovel;
+        }
+    }
+
+    IEnumerator Gun()
+    {
+        while (true)
+        {
+            Fire();
+            yield return new WaitForSeconds(speed);
         }
     }
 
@@ -49,11 +56,12 @@ public class Weapon : MonoBehaviour
     {
         this.damage = damage * Character.Damage;
         this.count += count;
-        
+
         if (id == 0)
             Batch();
 
         player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
+        wait = new WaitForSeconds(speed);
     }
 
     public void Init(ItemData data)
@@ -68,13 +76,15 @@ public class Weapon : MonoBehaviour
         damage = data.baseDamage * Character.Damage;
         count = data.baseCount + Character.Count;
 
-        for (int i=0; i<GameManager.instance.pool.prefabs.Length; i++)
-            if (data.projectile == GameManager.instance.pool.prefabs[i]) {
+        for (int i = 0; i < GameManager.instance.pool.prefabs.Length; i++)
+            if (data.projectile == GameManager.instance.pool.prefabs[i])
+            {
                 prefabId = i;
                 break;
             }
-        
-        switch (id){
+
+        switch (id)
+        {
             case 0:
                 speed = 150 * Character.WeaponSpeed;
                 Batch();
@@ -94,13 +104,14 @@ public class Weapon : MonoBehaviour
 
     void Batch()
     {
-        for (int i=0; i<count; i++){
+        for (int i = 0; i < count; i++)
+        {
             Transform bullet;
             if (i < transform.childCount)
                 bullet = transform.GetChild(i);
             else
                 bullet = GameManager.instance.pool.Get(prefabId).transform;
-                
+
             bullet.parent = transform;
             bullet.localPosition = Vector3.zero;
             bullet.localRotation = Quaternion.identity;

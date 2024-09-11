@@ -1,51 +1,112 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    [HideInInspector]
 
+    public static GameManager instance;
+    WaitForSeconds wait;
+
+    [SerializeField]
     [Header("# Player Info")]
-    public int playerId;
-    public float health;
+    private float Hp;
     public float maxHealth = 100;
+    public int kill = -1;
+    public int playerId;
     public int level;
-    public int kill;
-    public int exp;
-    public int[] nextExp = {10, 30, 60, 100, 150, 210, 280, 360, 450, 600};
+    public int Exp;
+    public int[] nextExp = { 10, 30, 60, 100, 150, 210, 280, 360, 450, 600 };
 
     [Header("# Game Control")]
     public bool isLive;
-    public float gameTime;
+    private float time;
     public float maxGameTime = 2 * 10f;
 
     [Header("# Game Object")]
+    public HUD hud;
     public Player player;
     public PoolManager pool;
     public LevelUp uiLevelUp;
     public Result uiResult;
     public Transform uiJoy;
     public GameObject enemyCleaner;
+    public AchiveManager achiveManager;
+
+    public float health
+    {
+        get { return Hp; }
+        set
+        {
+            Hp = value;
+            hud.uiHealth();
+        }
+    }
+
+    public int exp
+    {
+        get { return Exp; }
+        set
+        {
+            if (!isLive)
+                return;
+            Exp += value;
+            kill++;
+
+            if (Exp >= nextExp[Mathf.Min(level, nextExp.Length - 1)])
+            {
+                Exp -= nextExp[Mathf.Min(level, nextExp.Length - 1)];
+                level++;
+                uiLevelUp.Show();
+            }
+            hud.uiHunting();
+        }
+    }
+
+    public float gameTime {
+        get {return time;}
+        set {
+            time = value;
+            hud.uiTime();
+        }
+    }
 
     void Awake()
     {
         instance = this;
+        wait = new WaitForSeconds(1);
         Application.targetFrameRate = 60;
+        UGS.UnityGoogleSheet.LoadAllData();
     }
 
     public void GameStart(int id)
     {
         playerId = id;
         health = maxHealth;
+        exp = 0;
 
         player.gameObject.SetActive(true);
         uiLevelUp.Select(playerId % 2);
+        StartCoroutine(TimeUpdate());
         Resume();
 
         AudioManager.instance.PlayBgm(true);
         AudioManager.instance.PlaySfx(AudioManager.Sfx.Select);
+    }
+
+    IEnumerator TimeUpdate()
+    {
+        while (gameTime < maxGameTime)
+        {
+            yield return wait;
+
+            if (isLive)
+                gameTime++;
+        }
+        gameTime = maxGameTime;
+        GameVictory();
     }
 
     public void GameOver()
@@ -91,31 +152,6 @@ public class GameManager : MonoBehaviour
     public void GameQuit()
     {
         Application.Quit();
-    }
-
-    void Update()
-    {
-        if (!isLive)
-            return;
-
-        gameTime += Time.deltaTime;
-        if (gameTime > maxGameTime){
-            gameTime = maxGameTime;
-            GameVictory();
-        }
-    }
-
-    public void GetExp ()
-    {
-        if (!isLive)
-            return;
-        exp++;
-        
-        if (exp == nextExp[Mathf.Min(level, nextExp.Length-1)]) {
-            exp = 0;
-            level++;
-            uiLevelUp.Show();
-        }
     }
 
     public void Stop()

@@ -44,8 +44,11 @@ public class Player : MonoBehaviour
         inputVec = value.Get<Vector2>();
 
         anim.SetFloat("Speed", inputVec.magnitude);
-        if (inputVec.x != 0)
+        if (inputVec.x != 0){
             spriter.flipX = inputVec.x < 0 ;
+            foreach (Hand hand in hands)
+                hand.setHand(spriter.flipX);
+        }
     }
 
     void OnCollisionStay2D(Collision2D collision)
