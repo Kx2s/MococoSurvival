@@ -1,6 +1,7 @@
 using DataTable;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class StageInfo : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class StageInfo : MonoBehaviour
     GameObject Rock;
 
     public Stage info;
+    public GameObject check;
 
     private void Awake() {
         btn = GetComponentInChildren<Button>(true);
@@ -20,6 +22,7 @@ public class StageInfo : MonoBehaviour
         bool isRock = false;
         string text = "";
         GetComponentInChildren<Text>().text = info.name;
+        btn.onClick.AddListener(StartStage);
 
         if (info.tema != 0){
         if (PlayerPrefs.GetInt((info.tema-1).ToString()) == 0){
@@ -46,5 +49,10 @@ public class StageInfo : MonoBehaviour
             btn.interactable = false;
         else 
             btn.interactable = true;
+    }
+
+    void StartStage() {
+        PlayerPrefs.SetInt("Stage", info.index);
+        check.SetActive(true);
     }
 }

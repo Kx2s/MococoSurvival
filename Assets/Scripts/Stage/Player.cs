@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
             return;
 
         Vector2 nextVec = inputVec * speed * Time.deltaTime;
+        print(nextVec);
         rigid.MovePosition(rigid.position + nextVec);
     }
 

@@ -35,8 +35,8 @@ public class AchiveManager : MonoBehaviour
 
     void Start()
     {
-        UnlockCharacter();
-        CheckAchive(EnumManager.Achive.UnlockPoato);
+        //UnlockCharacter();
+        //CheckAchive(EnumManager.Achive.UnlockPoato);
     }
 
     void UnlockCharacter()

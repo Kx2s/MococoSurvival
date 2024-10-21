@@ -9,6 +9,7 @@ public class StageSet : MonoBehaviour
 {
     List<Stage> stages;
     public Sprite[] sprites;
+    public GameObject check;
     public GameObject stagePrefab;
     
     void Start()
@@ -16,9 +17,10 @@ public class StageSet : MonoBehaviour
         stages = Stage.GetList();
 
         foreach (Stage s in stages) {
-            print(s.index);
             GameObject g = Instantiate(stagePrefab, transform);
-            g.AddComponent<StageInfo>().info = s;
+            StageInfo stageInfo = g.AddComponent<StageInfo>();
+            stageInfo.info = s;
+            stageInfo.check = check;
             g.GetComponentInChildren<Image>().sprite = sprites[(int)s.tema];
         }
     }

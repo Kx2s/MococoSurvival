@@ -78,12 +78,11 @@ public class GameManager : MonoBehaviour
         instance = this;
         wait = new WaitForSeconds(1);
         Application.targetFrameRate = 60;
-        UGS.UnityGoogleSheet.LoadAllData();
     }
 
-    public void GameStart(int id)
+    public void Start()
     {
-        playerId = id;
+        playerId = 0;
         health = maxHealth;
         exp = 0;
 
