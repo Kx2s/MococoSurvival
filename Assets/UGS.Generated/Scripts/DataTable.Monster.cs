@@ -59,6 +59,9 @@ namespace DataTable
 		public System.Int32 index;
 		public Tema tema;
 		public System.String name;
+		public System.Int32 health;
+		public System.Single speed;
+		public System.Single spawnTime;
   
 
 #region fuctions

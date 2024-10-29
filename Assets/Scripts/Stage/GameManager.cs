@@ -1,5 +1,7 @@
+using DataTable;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,12 +14,24 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     [Header("# Player Info")]
-    private float Hp;
-    public float maxHealth = 100;
     public int kill = -1;
-    public int playerId;
+    public int Damage;
+    private float Hp;
+    public float maxHealth;
+    public int Critical;
+    public float Speed;
+    public float AttackSpeed;
+    public float ExpBoost;
+    public float GoldBoost;
+    public float Count;
+
+    public int playerId; //삭제예정
     public int level;
     public int Exp;
+
+    public Dictionary<Skill, int> passive;
+    public Dictionary<Skill, int> active;
+
     public int[] nextExp = { 10, 30, 60, 100, 150, 210, 280, 360, 450, 600 };
 
     [Header("# Game Control")]
@@ -78,6 +92,8 @@ public class GameManager : MonoBehaviour
         instance = this;
         wait = new WaitForSeconds(1);
         Application.targetFrameRate = 60;
+        passive = new Dictionary<Skill, int>();
+        active = new Dictionary<Skill, int>();
     }
 
     public void Start()

@@ -1,3 +1,4 @@
+using DataTable;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,9 +53,9 @@ public class Enemy : MonoBehaviour
         spriter.flipX = target.position.x < rigid.position.x;
     }
 
-    public void Init(SpawnData data)
+    public void Init(Monster data)
     {
-        anim.runtimeAnimatorController = animCon[data.spriteType];
+        anim.runtimeAnimatorController = animCon[data.index];
         speed = data.speed;
         maxHealth = data.health;
         health = data.health;

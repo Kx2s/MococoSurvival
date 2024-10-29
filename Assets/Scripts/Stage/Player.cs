@@ -36,13 +36,13 @@ public class Player : MonoBehaviour
             return;
 
         Vector2 nextVec = inputVec * speed * Time.deltaTime;
-        print(nextVec);
         rigid.MovePosition(rigid.position + nextVec);
     }
 
     void OnMove(InputValue value)
     {
         inputVec = value.Get<Vector2>();
+        print("Onmove");
 
         anim.SetFloat("Speed", inputVec.magnitude);
         if (inputVec.x != 0){

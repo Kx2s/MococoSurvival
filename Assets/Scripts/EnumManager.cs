@@ -3,13 +3,12 @@ using GoogleSheet.Core.Type;
 namespace EnumManager
 {
     public enum Achive { UnlockPoato, UnlockBean }
-    
 }
 
 [UGS(typeof(SkillType))]
 public enum SkillType
 {
-    passive, basic, engraving, evolution
+    기본, 패시브, 액티브, 진화
 }
 
 [UGS(typeof(Tema))]

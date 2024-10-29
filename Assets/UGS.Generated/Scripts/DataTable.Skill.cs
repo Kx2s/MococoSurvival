@@ -57,12 +57,13 @@ namespace DataTable
 /* Fields. */
 
 		public System.Int32 index;
-		public System.String name;
-		public System.String desc;
-		public SkillType type;
-		public System.Collections.Generic.List<Int32> ea;
-		public System.Collections.Generic.List<Int32> damage;
-		public System.Int32 need;
+		public System.String sk_name;
+		public System.String sk_desc;
+		public SkillType sk_type;
+		public System.Int32 sk_time;
+		public System.Int32 sk_damage;
+		public System.Int32 sk_count;
+		public System.Collections.Generic.List<String> sk_need;
   
 
 #region fuctions

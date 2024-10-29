@@ -1,3 +1,4 @@
+using DataTable;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,27 +7,36 @@ public class Spawner : MonoBehaviour
 {
     int level;
     float timer;
+    List<Monster> monsterData;
 
     public float levelTime;
     public Transform[] spawnPoint;
-    public SpawnData[] spawnData;
 
     void Awake()
     {
+        monsterData = new List<Monster>();
         spawnPoint = GetComponentsInChildren<Transform>();
-        levelTime = GameManager.instance.maxGameTime / spawnData.Length;
     }
 
-    void Update()
+    private void Start()
     {
-        if (!GameManager.instance.isLive)
-            return;
-            
-        timer += Time.deltaTime;
-        level = Mathf.Min(Mathf.FloorToInt(GameManager.instance.gameTime / levelTime), spawnData.Length - 1);
-        if (timer > spawnData[level].spawnTime){
-            timer = 0;
+        foreach(Monster m in Monster.GetList())
+            if((int)m.tema == PlayerPrefs.GetInt("Stage")/3)
+                monsterData.Add(m);
+        levelTime = GameManager.instance.maxGameTime / monsterData.Count;
+
+        StartCoroutine(SpawnCoroutine());
+    }
+
+    IEnumerator SpawnCoroutine()
+    {
+
+        while (true)
+        {
+            yield return !GameManager.instance.isLive;
             Spawn();
+            level = Mathf.Min(Mathf.FloorToInt(GameManager.instance.gameTime / levelTime), monsterData.Count - 1);
+            yield return new WaitForSeconds(monsterData[level].spawnTime);
         }
     }
 
@@ -34,15 +44,6 @@ public class Spawner : MonoBehaviour
     {
         GameObject enemy = GameManager.instance.pool.Get(0);
         enemy.transform.position = spawnPoint[Random.Range(1, spawnPoint.Length)].position;
-        enemy.GetComponent<Enemy>().Init(spawnData[level]);
+        enemy.GetComponent<Enemy>().Init(monsterData[level]);
     }
-}
-
-[System.Serializable]
-public class SpawnData
-{
-    public int spriteType;
-    public float spawnTime;
-    public int health;
-    public float speed;
 }
