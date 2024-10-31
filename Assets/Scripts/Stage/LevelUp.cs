@@ -7,14 +7,14 @@ public class LevelUp : MonoBehaviour
 {
     RectTransform rect;
     Item[] items;
-    SkillData[] choices;
+    SkillInfo[] choices;
     public List<Skill> skills;
 
     void Awake()
     {
         rect = GetComponent<RectTransform>();
         items = GetComponentsInChildren<Item>(true);
-        choices = GetComponentsInChildren<SkillData>();
+        choices = GetComponentsInChildren<SkillInfo>();
 
         skills = new List<Skill>();
         foreach (Skill s in Skill.GetList())
@@ -58,10 +58,9 @@ public class LevelUp : MonoBehaviour
                 break;
         }
 
-        print(skills.Count);
         for (int i = 0; i < ran.Length; i++)
         {
-            SkillData ranSkill = choices[i];
+            SkillInfo ranSkill = choices[i];
             ranSkill.init(skills[ran[i]]);
         }
     }

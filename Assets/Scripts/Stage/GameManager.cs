@@ -15,10 +15,13 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     [Header("# Player Info")]
     public int kill = -1;
-    public int Damage;
+    public float Damage;
     private float Hp;
     public float maxHealth;
     public int Critical;
+    public int Range;
+    public int Slow;
+    public int Reduces;
     public float Speed;
     public float AttackSpeed;
     public float ExpBoost;
@@ -89,6 +92,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        print("IN");
         instance = this;
         wait = new WaitForSeconds(1);
         Application.targetFrameRate = 60;
@@ -98,6 +102,7 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
+        maxHealth = Character.Health;
         playerId = 0;
         health = maxHealth;
         exp = 0;
