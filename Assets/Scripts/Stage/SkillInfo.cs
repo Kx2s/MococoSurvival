@@ -10,14 +10,16 @@ public class SkillInfo : MonoBehaviour
     Text textLevel;
     Text textName;
     Text textDesc;
-    GameManager GM;
+    LevelUp levelUp;
 
     public Skill skill;
     public int level;
 
+
     void Awake()
     {
         icon = GetComponentsInChildren<Image>()[1];
+        levelUp = GetComponentInParent<LevelUp>();
 
         Text[] texts = GetComponentsInChildren<Text>();
         textLevel = texts[0];
@@ -25,10 +27,6 @@ public class SkillInfo : MonoBehaviour
         textDesc = texts[2];
 
         GetComponent<Button>().onClick.AddListener(OnClick);
-    }
-    private void Start()
-    {
-        GM = GameManager.instance;
     }
 
     public void init(Skill data)
@@ -40,11 +38,16 @@ public class SkillInfo : MonoBehaviour
 
         //레벨 세팅
         int level = 0;
-        if (skill.sk_type == SkillType.패시브 && GM.passive.ContainsKey(skill))
-            level = GM.passive[skill];
-        else if (GM.active.ContainsKey(skill))
-            level = GM.active[skill];
-        textLevel.text = "Lv."+ (level+1);
+        if (skill.sk_type == SkillType.진화)
+            textLevel.text = "";
+        else
+        {
+            if (skill.sk_type == SkillType.패시브 && GameManager.instance.passive.ContainsKey(skill.index))
+                level = GameManager.instance.passive[skill.index];
+            else if (GameManager.instance.active.ContainsKey(skill.index))
+                level = GameManager.instance.active[skill.index];
+            textLevel.text = "Lv." + (level + 1);
+        }
 
         //스킬 이름
         textName.text = skill.sk_name;
@@ -59,8 +62,16 @@ public class SkillInfo : MonoBehaviour
         GameObject data = SkillContainer.container.GetChild(skill.index).gameObject;
 
         if (!data.activeSelf)
+        {
             data.GetComponent<SkillData>().On();
+            if (skill.sk_type == SkillType.진화)
+                levelUp.skills.Remove(skill);
+        }
         else
+        {
             data.GetComponent<SkillData>().levelUp();
+            if (data.GetComponent<SkillData>().level == 5)
+                levelUp.skills.Remove(skill);
+        }
     }
 }

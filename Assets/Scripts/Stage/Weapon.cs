@@ -54,7 +54,7 @@ public class Weapon : MonoBehaviour
 
     public void LevelUp(float damage, int count)
     {
-        this.damage = damage * Character.Damage;
+        this.damage = damage * Character.Attack;
         this.count += count;
 
         if (id == 0)
@@ -73,7 +73,7 @@ public class Weapon : MonoBehaviour
 
         // data set
         id = data.itemId;
-        damage = data.baseDamage * Character.Damage;
+        damage = data.baseDamage * Character.Attack;
         count = data.baseCount + Character.Count;
 
         for (int i = 0; i < GameManager.instance.pool.prefabs.Length; i++)

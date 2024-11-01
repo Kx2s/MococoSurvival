@@ -8,16 +8,23 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [HideInInspector]
-
-    public static GameManager instance;
     WaitForSeconds wait;
+    public static GameManager instance;
 
     [SerializeField]
+    [Header("# Player Base")]
+    public float baseAttack;
+    public float baseSpeed;
+    public float baseHealth;
+
     [Header("# Player Info")]
     public int kill = -1;
-    public float Damage;
+    public float Attack;
     private float Hp;
-    public float maxHealth;
+    public int level;
+    public int Exp;
+
+    [Header("# Special Ability")]
     public int Critical;
     public int Range;
     public int Slow;
@@ -29,11 +36,9 @@ public class GameManager : MonoBehaviour
     public float Count;
 
     public int playerId; //삭제예정
-    public int level;
-    public int Exp;
 
-    public Dictionary<Skill, int> passive;
-    public Dictionary<Skill, int> active;
+    public Dictionary<int, int> passive;
+    public Dictionary<int, int> active;
 
     public int[] nextExp = { 10, 30, 60, 100, 150, 210, 280, 360, 450, 600 };
 
@@ -92,19 +97,24 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        print("IN");
         instance = this;
         wait = new WaitForSeconds(1);
         Application.targetFrameRate = 60;
-        passive = new Dictionary<Skill, int>();
-        active = new Dictionary<Skill, int>();
+        passive = new Dictionary<int, int>();
+        active = new Dictionary<int, int>();
     }
 
     public void Start()
     {
-        maxHealth = Character.Health;
+        baseHealth = Character.Health;
+        baseAttack = Character.Attack;
+        baseSpeed = Character.Speed;
+
+
         playerId = 0;
-        health = maxHealth;
+        health = baseHealth;
+        Attack = baseAttack;
+        Speed = baseSpeed;
         exp = 0;
 
         player.gameObject.SetActive(true);

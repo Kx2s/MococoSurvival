@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    public static float Damage {
+    public static float Attack {
         get
         {
-            int damage = 100;
-            damage += damage/10 * PlayerPrefs.GetInt("Weapon")+1;
-            return damage;
+            int attack = 100;
+            attack += attack / 10 * (PlayerPrefs.GetInt("Weapon"));
+            return attack;
         }
     }
     

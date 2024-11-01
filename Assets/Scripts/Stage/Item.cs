@@ -84,12 +84,10 @@ public class Item : MonoBehaviour
 
                 break;
             case ItemData.ItemType.Heal:
-                GameManager.instance.health = GameManager.instance.maxHealth;
+                GameManager.instance.health = GameManager.instance.baseHealth;
                 return;
         }
 
-        level++;
-        if (level == data.damages.Length)
-            GetComponent<Button>().interactable = false;
+        level = Mathf.Min( level+1, 4);
     }
 }

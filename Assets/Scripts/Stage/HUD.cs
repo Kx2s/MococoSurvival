@@ -38,7 +38,7 @@ public class HUD : MonoBehaviour
     public void uiHealth()
     {
         float curHealth = GameManager.instance.health;
-        float maxHealth = GameManager.instance.maxHealth;
+        float maxHealth = GameManager.instance.baseHealth;
         mySlider[(int)sliderType.Health].value = curHealth / maxHealth;
     }
 }
