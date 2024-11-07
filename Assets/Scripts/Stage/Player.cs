@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         inputVec = value.Get<Vector2>();
+        print(value);
 
         anim.SetFloat("Speed", inputVec.magnitude);
         if (inputVec.x != 0){

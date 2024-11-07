@@ -7,15 +7,17 @@ using UnityEngine.UI;
 public class HUD : MonoBehaviour
 {
     enum textType { Level, Time, Kill }
-    enum sliderType { Exp, Health }
+    enum sliderType { Exp, Health, Shield }
 
     Text[] myText;
     Slider[] mySlider;
+    FollowShield follow;
 
     void Awake()
     {
         myText = GetComponentsInChildren<Text>();
         mySlider = GetComponentsInChildren<Slider>();
+        follow = GetComponentInChildren<FollowShield>();
     }
 
     public void uiHunting()
@@ -38,7 +40,11 @@ public class HUD : MonoBehaviour
     public void uiHealth()
     {
         float curHealth = GameManager.instance.health;
-        float maxHealth = GameManager.instance.baseHealth;
+        float shield = GameManager.instance.Shield;
+        float maxHealth = GameManager.instance.baseHealth + shield;
+
+        follow.UpdateTransform(curHealth / maxHealth);
         mySlider[(int)sliderType.Health].value = curHealth / maxHealth;
+        mySlider[(int)sliderType.Shield].value = shield / maxHealth;
     }
 }

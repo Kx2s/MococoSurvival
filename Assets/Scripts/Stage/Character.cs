@@ -19,7 +19,7 @@ public class Character : MonoBehaviour
         {
             int hp = 100;
             int sum = PlayerPrefs.GetInt("Head") + PlayerPrefs.GetInt("Chest")
-                + PlayerPrefs.GetInt("Leg") + PlayerPrefs.GetInt("Hand") + PlayerPrefs.GetInt("Foot") + 1;
+                + PlayerPrefs.GetInt("Leg") + PlayerPrefs.GetInt("Hand") + PlayerPrefs.GetInt("Shoulder") + 1;
             hp *= hp/10 * sum;
             return hp;
         }

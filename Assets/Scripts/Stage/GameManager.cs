@@ -7,33 +7,35 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [HideInInspector]
     WaitForSeconds wait;
     public static GameManager instance;
 
-    [SerializeField]
     [Header("# Player Base")]
     public float baseAttack;
-    public float baseSpeed;
     public float baseHealth;
+    public float baseSpeed;
 
     [Header("# Player Info")]
     public int kill = -1;
     public float Attack;
+    [SerializeField]
     private float Hp;
+    public float Shield;
     public int level;
     public int Exp;
 
+    [SerializeField]
     [Header("# Special Ability")]
     public int Critical;
     public int Range;
     public int Slow;
     public int Reduces;
+    public int Count;
+    public int AttackRate;
     public float Speed;
     public float AttackSpeed;
     public float ExpBoost;
     public float GoldBoost;
-    public float Count;
 
     public int playerId; //삭제예정
 
@@ -44,6 +46,7 @@ public class GameManager : MonoBehaviour
 
     [Header("# Game Control")]
     public bool isLive;
+    [SerializeField]
     private float time;
     public float maxGameTime = 2 * 10f;
 
@@ -117,6 +120,15 @@ public class GameManager : MonoBehaviour
         Speed = baseSpeed;
         exp = 0;
 
+        for (int i=0; i<5; i++)
+        {
+            if (i < 3)
+            {
+                continue;
+            }
+            print(i);
+        }
+
         player.gameObject.SetActive(true);
         uiLevelUp.Select(playerId % 2);
         StartCoroutine(TimeUpdate());
@@ -125,6 +137,8 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.PlayBgm(true);
         AudioManager.instance.PlaySfx(AudioManager.Sfx.Select);
     }
+
+    
 
     IEnumerator TimeUpdate()
     {
