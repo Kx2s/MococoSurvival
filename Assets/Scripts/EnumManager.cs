@@ -3,6 +3,7 @@ using GoogleSheet.Core.Type;
 namespace EnumManager
 {
     public enum Achive { UnlockPoato, UnlockBean }
+    public enum Equipment { Head, Chest, Leg, Hand, Shoulder, Weapon };
 }
 
 [UGS(typeof(SkillType))]
