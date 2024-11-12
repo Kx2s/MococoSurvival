@@ -52,6 +52,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    void OnBack()
+    {
+        GameManager.instance.Pause();
+    }
+
     void OnCollisionStay2D(Collision2D collision)
     {
         if (!GameManager.instance.isLive)

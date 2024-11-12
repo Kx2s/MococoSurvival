@@ -51,13 +51,14 @@ public class GameManager : MonoBehaviour
     public float maxGameTime = 2 * 10f;
 
     [Header("# Game Object")]
+    public GameObject enemyCleaner;
+    public GameObject pause;
     public HUD hud;
     public Player player;
     public PoolManager pool;
     public LevelUp uiLevelUp;
     public Result uiResult;
     public Transform uiJoy;
-    public GameObject enemyCleaner;
     public AchiveManager achiveManager;
 
     public float health
@@ -210,5 +211,21 @@ public class GameManager : MonoBehaviour
         isLive = true;
         Time.timeScale = 1;
         uiJoy.localScale = Vector3.one;
+    }
+
+    public void Pause()
+    {
+        if (!isLive)
+            return;
+        Stop();
+
+        string tmp = "";
+        foreach(KeyValuePair<int, int> pair in active)
+            tmp += pair.Key + " ";
+        tmp += "\n";
+        foreach (KeyValuePair<int, int> pair in passive)
+            tmp += pair.Key + " ";
+        print(tmp);
+        pause.SetActive(true);
     }
 }
