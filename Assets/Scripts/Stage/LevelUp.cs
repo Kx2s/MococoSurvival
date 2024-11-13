@@ -1,5 +1,6 @@
 using DataTable;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,7 +53,7 @@ public class LevelUp : MonoBehaviour
 
     public void Next()
     {
-        check();
+        skillSet();
         int[] ran = new int[3];
         while (true)
         {
@@ -71,57 +72,70 @@ public class LevelUp : MonoBehaviour
         }
     }
 
-    public void check()
+    public void skillSet()
     {
-        List<Skill> list = new List<Skill>(checkList);
-        //진화스킬 체크
-        foreach (Skill skill in list)
+        skills.Clear();
+
+        foreach (Skill sk in Skill.GetList())
         {
-            bool tf = true;
-            foreach (int need in skill.sk_need)
+            int level = 0;
+            switch (sk.sk_type)
             {
-                Skill tmp = Skill.GetList()[need];
-                if (tmp.sk_type == SkillType.패시브)
-                {
-                    if (!GameManager.instance.passive.ContainsKey(need))
-                        tf = false;
-                }
-                else
-                {
-                    if (!GameManager.instance.active.ContainsKey(need)
-                        || GameManager.instance.active[need] != 5)
-                        tf = false;
-                }
+                case SkillType.기본:
+                    if (GameManager.instance.active.TryGetValue(sk.index, out level) && level < 5)
+                        skills.Add(sk);
+                    break;
+
+                case SkillType.패시브:
+                    if ((GameManager.instance.passive.TryGetValue(sk.index, out level) && level < 5)
+                        || level == 0 && GameManager.instance.passive.Count < 5)
+                        skills.Add(sk);
+                    break;
+
+                case SkillType.액티브:
+                    if (!GameManager.instance.active.ContainsKey(sk.sk_upper[0]) &&
+                        (GameManager.instance.active.TryGetValue(sk.index, out level) && level < 5)
+                        || level == 0 && GameManager.instance.active.Count < 5)
+                        skills.Add(sk);
+                    break;
+
+                case SkillType.진화:
+                    if (!GameManager.instance.active.TryGetValue(sk.index, out level))
+                    {
+                        bool tf = true;
+                        foreach (int need in sk.sk_need)
+                        {
+                            Skill tmp = Skill.GetList()[need];
+                            if (tmp.sk_type == SkillType.패시브)
+                            {
+                                if (!GameManager.instance.passive.ContainsKey(need))
+                                    tf = false;
+                            }
+                            else
+                            {
+                                if (!GameManager.instance.active.ContainsKey(need)
+                                    || GameManager.instance.active[need] != 5)
+                                    tf = false;
+                            }
+                        }
+                        if (tf)                        
+                            skills.Add(sk);                        
+                    }
+                    break;
             }
-
-            if (tf)
-            {
-                skills.Add(skill);
-                checkList.Remove(skill);
-            }
         }
 
-        list = new List<Skill>(skills);
-        if (GameManager.instance.passive.Count == 5)
-        {
-            foreach (Skill skill in list)
-                if (skill.sk_type == SkillType.패시브 && !GameManager.instance.passive.ContainsKey(skill.index))
-                    skills.Remove(skill);
-            GameManager.instance.passive.Add(-1, 0);
-        }
-
-        if (GameManager.instance.active.Count == 5)
-        {
-            foreach (Skill skill in list)
-                if (skill.sk_type == SkillType.액티브 && !GameManager.instance.active.ContainsKey(skill.index))
-                    skills.Remove(skill);
-            GameManager.instance.active.Add(-1, 0);
-        }
-
-        string str = "";
+        string str = "랜덤 스킬 목록 : ";
         foreach(Skill skill in skills)
             str += skill.sk_name+" ";
         
         print(str);
+    }
+
+    public void activeRefill()
+    {
+        foreach(Skill sk in Skill.GetList())
+            if (sk.sk_type != SkillType.액티브 && !GameManager.instance.active.ContainsKey(sk.index))
+                skills.Add(sk);
     }
 }

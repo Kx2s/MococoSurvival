@@ -16,18 +16,15 @@ public class Pause : MonoBehaviour
     {
         int cnt = 0;
         foreach (KeyValuePair<int, int> pair in GameManager.instance.active)
-        {
-            if (cnt >= 5)
-                break;
             skillPauses[cnt++].init(Skill.GetList()[pair.Key], pair.Value);
-        }
 
-        cnt = 5;
+        for (; cnt < 5; cnt++)
+            skillPauses[cnt].init(null, 0);
+
         foreach (KeyValuePair<int, int> pair in GameManager.instance.passive)
-        {
-            if (cnt >= 10)
-                break;
             skillPauses[cnt++].init(Skill.GetList()[pair.Key], pair.Value);
-        }
+
+        for (; cnt < 10; cnt++)
+            skillPauses[cnt].init(null, 0);
     }
 }

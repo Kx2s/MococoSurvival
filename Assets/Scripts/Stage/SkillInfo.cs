@@ -39,7 +39,7 @@ public class SkillInfo : MonoBehaviour
         //레벨 세팅
         int level = 0;
         if (skill.sk_type == SkillType.진화)
-            textLevel.text = "";
+            textLevel.text = "Lv.MAX";
         else
         {
             if (skill.sk_type == SkillType.패시브 && GameManager.instance.passive.ContainsKey(skill.index))
@@ -65,13 +65,17 @@ public class SkillInfo : MonoBehaviour
         {
             data.GetComponent<SkillData>().On();
             if (skill.sk_type == SkillType.진화)
+            {
                 levelUp.skills.Remove(skill);
+                levelUp.activeRefill();
+                foreach (int need in skill.sk_need)
+                    if (Skill.GetList()[need].sk_type != SkillType.패시브)
+                        SkillContainer.container.GetChild(need).gameObject.SetActive(false);
+            }
         }
         else
         {
             data.GetComponent<SkillData>().levelUp();
-            if (data.GetComponent<SkillData>().level == 5)
-                levelUp.skills.Remove(skill);
         }
     }
 }

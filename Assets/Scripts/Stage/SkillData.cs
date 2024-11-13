@@ -156,7 +156,6 @@ public class SkillData : MonoBehaviour
             {
                 RectTransform trans = GameManager.instance.pool.Get(3).transform.gameObject.GetComponent<RectTransform>();
                 trans.position = transform.position;
-                print(Quaternion.Euler(0, 0, angle*i) * ran);
                 
                 //임시
                 trans.position += Quaternion.Euler(0, 0, angle * i) * ran * 2;
@@ -179,12 +178,11 @@ public class SkillData : MonoBehaviour
             {
                 RectTransform trans = GameManager.instance.pool.Get(4).transform.gameObject.GetComponent<RectTransform>();
                 trans.position = transform.position;
-                print(Quaternion.Euler(0, 0, angle * i) * ran);
 
                 //임시
                 trans.position += Quaternion.Euler(0, 0, angle * i) * ran * 2;
             }
-
+            print(time - time * GameManager.instance.AttackSpeed / 100);
             yield return new WaitForSeconds(time - time * GameManager.instance.AttackSpeed / 100);
         }
     }
@@ -204,5 +202,11 @@ public class SkillData : MonoBehaviour
     IEnumerator 전극 ()
     {
         yield break;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.instance.active.Remove(skill.index);
+        StopAllCoroutines();
     }
 }

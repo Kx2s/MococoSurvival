@@ -106,6 +106,8 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         passive = new Dictionary<int, int>();
         active = new Dictionary<int, int>();
+        pause.SetActive(true);
+        pause.SetActive(false);
     }
 
     public void Start()
@@ -218,14 +220,6 @@ public class GameManager : MonoBehaviour
         if (!isLive)
             return;
         Stop();
-
-        string tmp = "";
-        foreach(KeyValuePair<int, int> pair in active)
-            tmp += pair.Key + " ";
-        tmp += "\n";
-        foreach (KeyValuePair<int, int> pair in passive)
-            tmp += pair.Key + " ";
-        print(tmp);
         pause.SetActive(true);
     }
 }
