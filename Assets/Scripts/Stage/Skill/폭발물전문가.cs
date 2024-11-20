@@ -33,6 +33,7 @@ public class 폭발물전문가 : Skill_Active
             for (int i = 1; i <= total; i++)
             {
                 Transform grenade = GameManager.instance.pool.Get(Random.Range(3, 5)).transform;
+                grenade.position = transform.position;
                 grenade.GetComponent<Grenade>().dir = Quaternion.Euler(0, 0, angle * i) * dir;
                 grenade.GetComponent<Grenade>().level = 10;
             }

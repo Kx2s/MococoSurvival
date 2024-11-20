@@ -84,8 +84,8 @@ public class Enemy : MonoBehaviour
         speed = 1.5f;
         maxHealth = 50;
         exp = 1;
-        maxHealth *= Mathf.Pow(10, GameManager.instance.stage) + Mathf.Pow(1.1f, GameManager.instance.gameTime / 10)-1;
-        attack *= Mathf.Pow(10, GameManager.instance.stage) + Mathf.Pow(1.1f, GameManager.instance.gameTime / 10)-1;
+        maxHealth *= Mathf.Pow(10, GameManager.instance.stage) + Mathf.Pow(1.08f, GameManager.instance.gameTime / 10)-1;
+        attack *= Mathf.Pow(10, GameManager.instance.stage) + Mathf.Pow(1.05f, GameManager.instance.gameTime / 10)-1;
 
         int ran = Random.Range(0, 100);
 
@@ -119,9 +119,14 @@ public class Enemy : MonoBehaviour
         //데미지 적용
         int ran = Random.Range(0, 100);
         float cri = ran <= GameManager.instance.Critical ? 1.5f : 1;
-        float total = GameManager.instance.Attack * damage/100 * cri;
+        int total = (int)(GameManager.instance.Attack * damage/100 * cri);
         health -= total;
         
+        if (total > 999999999)
+        {
+            cri = 1;
+            total = 999999999;
+        }
         show.Hit(total, cri != 1);
 
         StartCoroutine(KnockBack());

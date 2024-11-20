@@ -175,6 +175,7 @@ public class GameManager : MonoBehaviour
     {
         int total = PlayerPrefs.GetInt("Gold") + Gold;
         PlayerPrefs.SetInt("Gold", total);
+        PlayerPrefs.SetInt("nowStage", Math.Max(stage+1, PlayerPrefs.GetInt("nowStage")));
     }
 
 
@@ -250,12 +251,14 @@ public class GameManager : MonoBehaviour
         isLive = true;
         Time.timeScale = 1;
         uiJoy.localScale = Vector3.one;
+        StartCoroutine(colliderCoroutine());
     }
 
     public void Pause()
     {
         if (!isLive)
             return;
+        player.GetComponent<Collider2D>().enabled = false;
         Stop();
         pause.SetActive(true);
     }
@@ -270,5 +273,11 @@ public class GameManager : MonoBehaviour
         enemyCleaner.SetActive(true);
         yield return new WaitForSeconds(0.5f);
         enemyCleaner.SetActive(false);
+    }
+
+    IEnumerator colliderCoroutine()
+    {
+        yield return new WaitForSeconds(1);
+        player.GetComponent<Collider2D>().enabled = true;
     }
 }

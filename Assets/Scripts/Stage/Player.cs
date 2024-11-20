@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
                 hand.setHand(spriter.flipX);
         }
 
-        Vector2 nextVec = joystick.Direction * GameManager.instance.Speed * Time.deltaTime;
+        Vector2 nextVec = joystick.Direction.normalized * GameManager.instance.Speed * Time.deltaTime;
         rigid.MovePosition(rigid.position + nextVec);
     }
 

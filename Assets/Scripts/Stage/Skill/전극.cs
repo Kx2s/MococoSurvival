@@ -13,7 +13,7 @@ public class 전극 : Skill_Active
     private void Awake()
     {
         skill = Skill.GetList()[13];
-        coll = GetComponent<Collider2D>();
+        coll = GetComponentInChildren<Collider2D>();
     }
     public override void init()
     {

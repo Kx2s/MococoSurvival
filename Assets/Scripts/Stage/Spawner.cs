@@ -30,13 +30,15 @@ public class Spawner : MonoBehaviour
         {
             yield return !GameManager.instance.isLive;
             Spawn();
-            yield return new WaitForSeconds(Mathf.Max(0.001f, .5f - 0.02f * GameManager.instance.gameTime/10));
+            yield return new WaitForSeconds(Mathf.Max(0.001f, .5f - 0.01f * GameManager.instance.gameTime/10));
         }
     }
 
     void Spawn()
     {
         GameObject enemy = GameManager.instance.pool.Get(0);
+        if (enemy == null)
+            return;
         enemy.transform.position = spawnPoint[Random.Range(1, spawnPoint.Length)].position;
     }
 }

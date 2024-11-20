@@ -21,20 +21,34 @@ public class 실페리온의도움 : Skill_Active
 
     IEnumerator coroutine()
     {
-        Transform child = transform.GetChild(0);
-        child.parent = null;
-        child.GetComponent<Trigg>().damage = skill.sk_bagic;
+        Transform effects = transform.GetChild(0);
+        GameObject particle = effects.GetChild(0).gameObject;
+        effects.parent = null;
+        particle.GetComponent<Trigg>().damage = skill.sk_bagic;
         while (true)
         {
-            Vector3 dir = Random.insideUnitCircle.normalized;
-            float ran = Random.Range(0f, 3f);
+            if (effects.childCount - 1 < GameManager.instance.Count)
+            {
+                GameObject g = Instantiate(particle, effects);
+                g.GetComponent<Trigg>().damage = skill.sk_bagic;
+            }
 
-            child.position = dir * ran;
-            child.localScale = Vector3.one * 0.5f * (GameManager.instance.Range + 2);
+            for (int i = 0; i < effects.childCount; i++)
+            {
+                Vector3 dir = Random.insideUnitCircle.normalized;
+                float ran = Random.Range(0f, 4f);
 
-            child.gameObject.SetActive(true);
+                Transform child = effects.GetChild(i);
+                child.position = dir * ran;
+                child.parent = null;
+                child.localScale = Vector3.one * 0.5f * (GameManager.instance.Range + 2);
+                child.parent = effects;
+            }
+
+            effects.position = transform.position;
+            effects.gameObject.SetActive(true);
             yield return new WaitForSeconds(1f);
-            child.gameObject.SetActive(false);
+            effects.gameObject.SetActive(false);
 
             yield return new WaitForSeconds(coolTime());
         }

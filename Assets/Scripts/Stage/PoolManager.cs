@@ -16,11 +16,15 @@ public class PoolManager : MonoBehaviour
 
     public GameObject Get(int idx)
     {
+        int cnt = 0;
         foreach (GameObject item in pools[idx])
             if (!item.activeSelf) {
+                cnt++;
                 item.SetActive(true);
                 return item;
             }
+        if (cnt == 500)
+            return null;
         
         GameObject select = Instantiate(prefabs[idx], transform);
         pools[idx].Add(select);
