@@ -9,10 +9,9 @@ public class Player : MonoBehaviour
     Rigidbody2D rigid;
     SpriteRenderer spriter;
 
-    public float speed;
     public Vector2 inputVec;
-    public Scanner scanner;
     public Hand[] hands;
+    public VariableJoystick joystick;
     public RuntimeAnimatorController[] animCon;
 
     void Awake()
@@ -20,13 +19,11 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         spriter = GetComponent<SpriteRenderer>();
-        scanner = GetComponent<Scanner>();
         hands = GetComponentsInChildren<Hand>(true);
     }
 
     void OnEnable()
     {
-        speed *= Character.Speed;
         anim.runtimeAnimatorController = animCon[GameManager.instance.playerId];
     }
     
@@ -35,21 +32,20 @@ public class Player : MonoBehaviour
         if (!GameManager.instance.isLive)
             return;
 
-        Vector2 nextVec = inputVec * speed * Time.deltaTime;
+        anim.SetFloat("Speed", joystick.Direction.magnitude);
+        if (joystick.Direction.x != 0){
+            spriter.flipX = joystick.Direction.x < 0 ;
+            foreach (Hand hand in hands)
+                hand.setHand(spriter.flipX);
+        }
+
+        Vector2 nextVec = joystick.Direction * GameManager.instance.Speed * Time.deltaTime;
         rigid.MovePosition(rigid.position + nextVec);
     }
 
     void OnMove(InputValue value)
     {
         inputVec = value.Get<Vector2>();
-        //print(value);
-
-        anim.SetFloat("Speed", inputVec.magnitude);
-        if (inputVec.x != 0){
-            spriter.flipX = inputVec.x < 0 ;
-            foreach (Hand hand in hands)
-                hand.setHand(spriter.flipX);
-        }
     }
 
     void OnBack()
@@ -62,7 +58,7 @@ public class Player : MonoBehaviour
         if (!GameManager.instance.isLive)
             return;
 
-        GameManager.instance.health -= Time.deltaTime * 10;
+        GameManager.instance.subHealth(Time.deltaTime * collision.gameObject.GetComponent<Enemy>().attack * (100 - GameManager.instance.Reduces) / 100);
         Vibration.Vibrate(50);
         if (GameManager.instance.health <= 0) {
             for (int i=2; i<transform.childCount; i++) {
@@ -73,5 +69,11 @@ public class Player : MonoBehaviour
             GameManager.instance.GameOver();
         }
     }
+
+    public void DeadAnim()
+    {
+        anim.SetTrigger("Dead");
+    }
+
 }
 

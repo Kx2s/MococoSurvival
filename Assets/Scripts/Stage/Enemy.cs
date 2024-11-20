@@ -1,5 +1,5 @@
 using DataTable;
-using System;
+using EnumManager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,21 +11,31 @@ public class Enemy : MonoBehaviour
     Rigidbody2D target;
     Rigidbody2D rigid;
     Collider2D coll;
+    ShowDamage show;
     SpriteRenderer spriter;
     WaitForFixedUpdate wait;
 
+    float chageTime;
+    float strongRate;
+
+    [Header("# Enemy Info")]
+    public float attack;
     public float speed;
     public float health;
     public float maxHealth;
+    public float exp;
 
     public RuntimeAnimatorController[] animCon;
 
     void Awake()
     {
+        chageTime = GameManager.instance.maxGameTime / 3;
+
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
         spriter = GetComponent<SpriteRenderer>();
+        show = GetComponentInChildren<ShowDamage>();
     }
 
     void OnEnable()
@@ -37,6 +47,8 @@ public class Enemy : MonoBehaviour
         spriter.sortingOrder = 2;
         anim.SetBool("Dead", false);
         health = maxHealth;
+
+        Init();
     }
     
     void FixedUpdate()
@@ -53,36 +65,83 @@ public class Enemy : MonoBehaviour
         spriter.flipX = target.position.x < rigid.position.x;
     }
 
-    public void Init(Monster data)
+    public void Init()
     {
-        anim.runtimeAnimatorController = animCon[data.index];
-        speed = data.speed;
-        maxHealth = data.health;
-        health = data.health;
+        if (GameManager.instance.gameTime < chageTime)
+        {
+            anim.runtimeAnimatorController = animCon[GameManager.instance.stage * 3];
+        }
+        else if (GameManager.instance.gameTime < 2 * chageTime)
+        {
+            anim.runtimeAnimatorController = animCon[GameManager.instance.stage * 3 + 1];
+        }
+        else
+        {
+            anim.runtimeAnimatorController = animCon[GameManager.instance.stage * 3 + 2];
+        }
+
+        attack = 10;
+        speed = 1.5f;
+        maxHealth = 50;
+        exp = 1;
+        maxHealth *= Mathf.Pow(10, GameManager.instance.stage) + Mathf.Pow(1.1f, GameManager.instance.gameTime / 10)-1;
+        attack *= Mathf.Pow(10, GameManager.instance.stage) + Mathf.Pow(1.1f, GameManager.instance.gameTime / 10)-1;
+
+        int ran = Random.Range(0, 100);
+
+        Color color = Color.white;
+        if (ran < 3)
+        {
+            ColorUtility.TryParseHtmlString("#444444", out color);
+            maxHealth *= 2;
+            exp = 2;
+        }
+        else if (ran < 6)
+        {
+            ColorUtility.TryParseHtmlString("#6071FF", out color);
+            speed *= 1.5f;
+            exp = 2;
+        }
+        else if (ran < 9)
+        {
+            ColorUtility.TryParseHtmlString("#FF6460", out color);
+            attack *= 2;
+            exp = 2;
+        }
+        spriter.color = color;
+        health = maxHealth;
+
+        speed -= speed * GameManager.instance.Slow/100;
     }
 
-    void OnTriggerEnter2D (Collider2D collision)
+    public void OnDamage (int damage)
     {
-        if (!collision.CompareTag("Bullet") || !isLive)
-            return;
+        //µ¥¹ÌÁö Àû¿ë
+        int ran = Random.Range(0, 100);
+        float cri = ran <= GameManager.instance.Critical ? 1.5f : 1;
+        float total = GameManager.instance.Attack * damage/100 * cri;
+        health -= total;
         
-        health -= collision.GetComponent<Bullet>().damage;
+        show.Hit(total, cri != 1);
+
         StartCoroutine(KnockBack());
 
-        if (health > 0){
+        if (health > 0)
+        {
             anim.SetTrigger("Hit");
-            AudioManager.instance.PlaySfx(AudioManager.Sfx.Hit);
+            AudioManager.instance.PlaySfx(Sfx.Hit);
         }
-        else {
+        else
+        {
             isLive = false;
             rigid.simulated = false;
             coll.enabled = false;
             spriter.sortingOrder = 1;
             anim.SetBool("Dead", true);
-            GameManager.instance.exp = 1;
+            GameManager.instance.exp = 1 * (GameManager.instance.ExpBoost+100)/100;
 
             if (GameManager.instance.isLive)
-                AudioManager.instance.PlaySfx(AudioManager.Sfx.Dead);
+                AudioManager.instance.PlaySfx(Sfx.Dead);
         }
     }
 
@@ -97,5 +156,23 @@ public class Enemy : MonoBehaviour
     void Dead()
     {
         gameObject.SetActive(false);
+
+        int ran = Random.Range(0, 10000);
+        GameObject item = null;
+
+        //ÆøÅº
+        if (ran < 10)
+            item = GameManager.instance.pool.Get(5);
+
+        //Æ÷¼Ç
+        else if (ran < 60)
+            item = GameManager.instance.pool.Get(6);
+
+        //°ñµå
+        else if (ran < 110)
+            item = GameManager.instance.pool.Get(7);
+
+        if (item != null)
+            item.transform.position = transform.position;
     }
 }

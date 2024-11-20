@@ -1,8 +1,10 @@
 using DataTable;
+using EnumManager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -14,15 +16,18 @@ public class GameManager : MonoBehaviour
     public float baseAttack;
     public float baseHealth;
     public float baseSpeed;
+    public int cnt = 1;
 
     [Header("# Player Info")]
     public int kill = -1;
     public float Attack;
-    [SerializeField]
-    private float Hp;
+    public float health;
     public float Shield;
+    public float Speed;
+    public int Gold;
     public int level;
-    public int Exp;
+    public float Exp;
+    public int nextExp = 3;
 
     [SerializeField]
     [Header("# Special Ability")]
@@ -31,8 +36,9 @@ public class GameManager : MonoBehaviour
     public int Slow;
     public int Reduces;
     public int Count;
-    public int AttackRate;
-    public float Speed;
+    [SerializeField]
+    private int AttackRate;
+    private int SpeedRate;
     public float AttackSpeed;
     public float ExpBoost;
     public float GoldBoost;
@@ -42,10 +48,10 @@ public class GameManager : MonoBehaviour
     public Dictionary<int, int> passive;
     public Dictionary<int, int> active;
 
-    public int[] nextExp = { 10, 30, 60, 100, 150, 210, 280, 360, 450, 600 };
 
     [Header("# Game Control")]
     public bool isLive;
+    public int stage;
     [SerializeField]
     private float time;
     public float maxGameTime = 2 * 10f;
@@ -60,18 +66,7 @@ public class GameManager : MonoBehaviour
     public Result uiResult;
     public Transform uiJoy;
     public AchiveManager achiveManager;
-
-    public float health
-    {
-        get { return Hp; }
-        set
-        {
-            Hp = value;
-            hud.uiHealth();
-        }
-    }
-
-    public int exp
+    public float exp
     {
         get { return Exp; }
         set
@@ -81,9 +76,10 @@ public class GameManager : MonoBehaviour
             Exp += value;
             kill++;
 
-            if (Exp >= nextExp[Mathf.Min(level, nextExp.Length - 1)])
+            if (Exp >= nextExp)
             {
-                Exp -= nextExp[Mathf.Min(level, nextExp.Length - 1)];
+                Exp -= nextExp;
+                nextExp += cnt++;
                 level++;
                 uiLevelUp.Show();
             }
@@ -99,6 +95,48 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void addhealth(float value)
+    {
+        health += value;
+        health = Math.Min(health, baseHealth);
+        hud.uiHealth();
+    }
+
+    public void subHealth(float value)
+    {
+        value = Shield - value;
+        Shield = Math.Max(0, value);
+
+        if (value < 0)
+            health += value;
+        hud.uiHealth();
+    }
+
+
+    public void addGold(float value)
+    {
+        Gold += (int)(value * (GoldBoost+100) / 100);
+        hud.uigold();
+    }
+
+    public void AttackRateUp(int value)
+    {
+        AttackRate += value;
+        Attack = baseAttack * (100 + AttackRate) / 100;
+    }
+
+    public void SpeedRateUp(int value)
+    {
+        SpeedRate += value;
+        Speed = baseSpeed * (100 + SpeedRate) / 100;
+    }
+
+    public void ShieldReset(float value)
+    {
+        Shield = value;
+        hud.uiHealth();
+    }
+
     void Awake()
     {
         instance = this;
@@ -106,15 +144,16 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         passive = new Dictionary<int, int>();
         active = new Dictionary<int, int>();
-        pause.SetActive(true);
-        pause.SetActive(false);
+        stage = PlayerPrefs.GetInt("Stage");
     }
 
     public void Start()
     {
+        pause.SetActive(true);
+        pause.SetActive(false);
         baseHealth = Character.Health;
         baseAttack = Character.Attack;
-        baseSpeed = Character.Speed;
+        baseSpeed = 3;
 
 
         playerId = 0;
@@ -123,25 +162,21 @@ public class GameManager : MonoBehaviour
         Speed = baseSpeed;
         exp = 0;
 
-        for (int i=0; i<5; i++)
-        {
-            if (i < 3)
-            {
-                continue;
-            }
-            print(i);
-        }
-
         player.gameObject.SetActive(true);
-        uiLevelUp.Select(playerId % 2);
+        SkillContainer.container.GetChild(25).gameObject.SetActive(true);
         StartCoroutine(TimeUpdate());
         Resume();
 
         AudioManager.instance.PlayBgm(true);
-        AudioManager.instance.PlaySfx(AudioManager.Sfx.Select);
+        AudioManager.instance.PlaySfx(Sfx.Select);
     }
 
-    
+    private void OnDisable()
+    {
+        int total = PlayerPrefs.GetInt("Gold") + Gold;
+        PlayerPrefs.SetInt("Gold", total);
+    }
+
 
     IEnumerator TimeUpdate()
     {
@@ -158,6 +193,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        player.DeadAnim();
         StartCoroutine(GameOverRoutine());
     }
 
@@ -170,25 +206,26 @@ public class GameManager : MonoBehaviour
         uiResult.Lose();
         Stop();
         AudioManager.instance.PlayBgm(false);
-        AudioManager.instance.PlaySfx(AudioManager.Sfx.Dead);
+        AudioManager.instance.PlaySfx(Sfx.Dead);
     }
 
     public void GameVictory()
     {
+        Gold += 10000 * (stage + 1);
         StartCoroutine(GameVictoryRoutine());
     }
 
     IEnumerator GameVictoryRoutine()
     {
         isLive = false;
-        enemyCleaner.SetActive(true);
+        Clean();
         yield return new WaitForSeconds(0.5f);
 
         uiResult.gameObject.SetActive(true);
         uiResult.Win();
         Stop();
         AudioManager.instance.PlayBgm(false);
-        AudioManager.instance.PlaySfx(AudioManager.Sfx.Win);
+        AudioManager.instance.PlaySfx(Sfx.Win);
     }
 
     public void GameRetry()
@@ -221,5 +258,17 @@ public class GameManager : MonoBehaviour
             return;
         Stop();
         pause.SetActive(true);
+    }
+
+    public void Clean()
+    {
+        StartCoroutine(cleanerCoroutine());
+    }
+
+    IEnumerator cleanerCoroutine()
+    {
+        enemyCleaner.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        enemyCleaner.SetActive(false);
     }
 }

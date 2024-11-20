@@ -1,93 +1,48 @@
+using EnumManager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Item : MonoBehaviour
 {
-    Image icon;
-    Text textLevel;
-    Text textName;
-    Text textDesc;
+    public ItemT type;
+    WaitForSeconds wait = new WaitForSeconds(.5f);
 
-    public int level;
-    public ItemData data;
-    public Weapon weapon;
-    public Gear gear;
-
-    void Awake()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        icon = GetComponentsInChildren<Image>()[1];
-        icon.sprite = data.itemIcon;
+        if (collision.tag != "Player")
+            return;
 
-        Text[] texts = GetComponentsInChildren<Text>();
-        textLevel = texts[0];
-        textName = texts[1];
-        textDesc = texts[2];
+        //에테르 포식자 추가예정
 
-        textName.text = data.itemName;
-        GetComponent<Button>().onClick.AddListener(OnClick);
+
+        switch (type)
+        {
+            case ItemT.Bomb:
+                Bomb(); break;
+            case ItemT.Gold:
+                Gold(); break;
+            case ItemT.Heal:
+                Healing(); break;
+        }
+        gameObject.SetActive(false);
     }
 
-    void OnEnable() 
+    public void Healing()
     {
-        textLevel.text = "Lv." + (level + 1);
-
-        switch (data.itemType) {
-            case ItemData.ItemType.Melee:
-            case ItemData.ItemType.Range: 
-                textDesc.text = string.Format(data.itemDesc, data.damages[level] * 100, data.counts[level]);
-                break;
-            
-            case ItemData.ItemType.Glove:
-            case ItemData.ItemType.Shoe:
-                textDesc.text = string.Format(data.itemDesc, data.damages[level] * 100);
-                break;
-            default:
-                textDesc.text = string.Format(data.itemDesc);
-                break;
-        }
+        GameManager.instance.addhealth(GameManager.instance.baseHealth / 10);
     }
 
-    public void OnClick()
+    public void Bomb()
     {
-        switch(data.itemType) {
-            case ItemData.ItemType.Melee:
-            case ItemData.ItemType.Range:
-                if (level == 0){
-                    GameObject newWeapon = new GameObject();
-                    weapon = newWeapon.AddComponent<Weapon>();
-                    weapon.Init(data);
-                }
-                else {
-                    float nextDamage = data.baseDamage;
-                    int nextCount = 0;
+        //파폭 사운드
 
-                    nextDamage += data.baseDamage * data.damages[level];
-                    nextCount += data.counts[level];
+        GameManager.instance.Clean();
+    }
 
-                    weapon.LevelUp(nextDamage, nextCount);
-                }
-
-                break;
-            case ItemData.ItemType.Glove:
-            case ItemData.ItemType.Shoe:
-                if (level == 0) {
-                    GameObject newGear = new GameObject();
-                    gear = newGear.AddComponent<Gear>();
-                    gear.Init(data);
-                }
-                else {
-                    float nextRate = data.damages[level];
-                    gear.LevelUp(nextRate);
-                }
-
-                break;
-            case ItemData.ItemType.Heal:
-                GameManager.instance.health = GameManager.instance.baseHealth;
-                return;
-        }
-
-        level = Mathf.Min( level+1, 4);
+    public void Gold()
+    {
+        print(GameManager.instance.stage + 1);
+        GameManager.instance.addGold(100 * (GameManager.instance.stage+1));
     }
 }

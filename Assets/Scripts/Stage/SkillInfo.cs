@@ -36,6 +36,23 @@ public class SkillInfo : MonoBehaviour
         //아이콘 변경
         this.icon.sprite = Resources.Load<Sprite>($"sk_icon/{skill.sk_name}");
 
+        //스킬 이름
+        textName.text = skill.sk_name;
+
+        if (skill.index == -1)
+        {
+            textLevel.text = "";
+            if (skill.sk_name.Equals("정령의 회복약"))
+            {
+                textDesc.text = "생명력 50% 회복";
+            }
+            else
+            {
+                textDesc.text = "1000 골드 획득";
+            }
+            return;
+        }
+
         //레벨 세팅
         int level = 0;
         if (skill.sk_type == SkillType.진화)
@@ -49,33 +66,40 @@ public class SkillInfo : MonoBehaviour
             textLevel.text = "Lv." + (level + 1);
         }
 
-        //스킬 이름
-        textName.text = skill.sk_name;
-
         //스킬 설명
-        textDesc.text = string.Format(skill.sk_desc,
-            skill.sk_time - skill.sk_time * level / 6, skill.sk_damage * (level + 1), skill.sk_count * (level + 1));
+        textDesc.text = string.Format(skill.sk_desc, skill.sk_increase);
     }
 
     public void OnClick()
     {
+        if (skill.index == -1)
+        {
+            if (skill.sk_name.Equals("정령의 회복약"))
+            {
+                GameManager.instance.addhealth(GameManager.instance.baseHealth / 2);
+            }
+            else
+            {
+                GameManager.instance.addGold(1000);
+            }
+            return;
+        }
+
         GameObject data = SkillContainer.container.GetChild(skill.index).gameObject;
 
         if (!data.activeSelf)
         {
-            data.GetComponent<SkillData>().On();
+            data.SetActive(true);
             if (skill.sk_type == SkillType.진화)
             {
-                levelUp.skills.Remove(skill);
-                levelUp.activeRefill();
-                foreach (int need in skill.sk_need)
-                    if (Skill.GetList()[need].sk_type != SkillType.패시브)
-                        SkillContainer.container.GetChild(need).gameObject.SetActive(false);
+                foreach(int idx in skill.sk_need)
+                    if (Skill.GetList()[idx].sk_type != SkillType.패시브)
+                        GameManager.instance.active.Remove(idx);
             }
         }
         else
         {
-            data.GetComponent<SkillData>().levelUp();
+            data.GetComponent<Skill_Basic>().levelUp();
         }
     }
 }

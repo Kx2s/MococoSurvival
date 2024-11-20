@@ -61,7 +61,8 @@ namespace DataTable
 		public System.String sk_desc;
 		public SkillType sk_type;
 		public System.Int32 sk_time;
-		public System.Int32 sk_damage;
+		public System.Int32 sk_bagic;
+		public System.Int32 sk_increase;
 		public System.Int32 sk_count;
 		public System.Collections.Generic.List<Int32> sk_need;
 		public System.Collections.Generic.List<Int32> sk_upper;

@@ -20,11 +20,6 @@ public class Spawner : MonoBehaviour
 
     private void Start()
     {
-        foreach(Monster m in Monster.GetList())
-            if((int)m.tema == PlayerPrefs.GetInt("Stage")/3)
-                monsterData.Add(m);
-        levelTime = GameManager.instance.maxGameTime / monsterData.Count;
-
         StartCoroutine(SpawnCoroutine());
     }
 
@@ -35,8 +30,7 @@ public class Spawner : MonoBehaviour
         {
             yield return !GameManager.instance.isLive;
             Spawn();
-            level = Mathf.Min(Mathf.FloorToInt(GameManager.instance.gameTime / levelTime), monsterData.Count - 1);
-            yield return new WaitForSeconds(monsterData[level].spawnTime);
+            yield return new WaitForSeconds(Mathf.Max(0.001f, .5f - 0.02f * GameManager.instance.gameTime/10));
         }
     }
 
@@ -44,6 +38,5 @@ public class Spawner : MonoBehaviour
     {
         GameObject enemy = GameManager.instance.pool.Get(0);
         enemy.transform.position = spawnPoint[Random.Range(1, spawnPoint.Length)].position;
-        enemy.GetComponent<Enemy>().Init(monsterData[level]);
     }
 }

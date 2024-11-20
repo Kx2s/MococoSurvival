@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DataTable;
-
+using EnumManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +11,7 @@ public class StageSet : MonoBehaviour
     public Sprite[] sprites;
     public GameObject check;
     public GameObject stagePrefab;
+    public AudioManager audioManager;
     
     void Start()
     {
@@ -22,6 +23,8 @@ public class StageSet : MonoBehaviour
             stageInfo.info = s;
             stageInfo.check = check;
             g.GetComponentInChildren<Image>().sprite = sprites[(int)s.tema];
+            print(audioManager);
+            g.GetComponentInChildren<Button>().onClick.AddListener(()=> audioManager.PlaySfx(Sfx.Enter));
         }
     }
 }

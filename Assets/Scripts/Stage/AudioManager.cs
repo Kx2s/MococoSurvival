@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using EnumManager;
 
 public class AudioManager : MonoBehaviour
 {
@@ -20,8 +21,6 @@ public class AudioManager : MonoBehaviour
     public int channels;
     AudioSource[] sfxPlayers;
     int channelIndex;
-
-    public enum Sfx { Dead, Hit, LevelUp=3, Lose, Melee, Range=7, Select, Win }
 
     void Awake()
     {
@@ -80,13 +79,45 @@ public class AudioManager : MonoBehaviour
                 continue;
 
             int ranIndex = 0;
-            if (sfx == Sfx.Hit || sfx == Sfx.Melee){
+            if (sfx == Sfx.Hit){
                 ranIndex = Random.Range(0, 2);
+            }
+
+            if (sfx == Sfx.Win)
+            {
+                sfxPlayers[loopIndex].volume = 1;
+            }
+            else
+            {
+                sfxPlayers[loopIndex].volume = sfxVolum;
             }
 
             channelIndex = loopIndex;
             sfxPlayers[loopIndex].clip = sfxClips[(int)sfx + ranIndex];
             sfxPlayers[loopIndex].Play();
+            break;
+        }
+    }
+
+    public void PlaySfx (int idx)
+    {
+        for (int i = 0; i < sfxPlayers.Length; i++)
+        {
+            int loopIndex = (i + channelIndex) % sfxPlayers.Length;
+
+            if (sfxPlayers[loopIndex].isPlaying)
+                continue;
+
+            int ranIndex = 0;
+            if ((Sfx) idx == Sfx.Hit)
+            {
+                ranIndex = Random.Range(0, 2);
+            }
+
+            channelIndex = loopIndex;
+            sfxPlayers[loopIndex].clip = sfxClips[idx + ranIndex];
+            sfxPlayers[loopIndex].Play();
+            print(sfxClips[idx + ranIndex].name);
             break;
         }
     }

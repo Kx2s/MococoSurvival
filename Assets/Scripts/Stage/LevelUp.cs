@@ -1,11 +1,14 @@
 using DataTable;
+using EnumManager;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelUp : MonoBehaviour
 {
+    bool isDestroy;
+
     RectTransform rect;
     Item[] items;
     SkillInfo[] choices;
@@ -33,7 +36,7 @@ public class LevelUp : MonoBehaviour
         Next();
         rect.localScale = Vector3.one;
         GameManager.instance.Stop();
-        AudioManager.instance.PlaySfx(AudioManager.Sfx.LevelUp);
+        AudioManager.instance.PlaySfx(Sfx.LevelUp);
         AudioManager.instance.EffectBgm(true);
     }
 
@@ -41,34 +44,28 @@ public class LevelUp : MonoBehaviour
     {
         rect.localScale = Vector3.zero;
         GameManager.instance.Resume();
-        AudioManager.instance.PlaySfx(AudioManager.Sfx.Select);
+        AudioManager.instance.PlaySfx(Sfx.Select);
         AudioManager.instance.EffectBgm(false);
-    }
-
-    public void Select(int idx)
-    {
-        print("Select " + idx);
-        items[idx].OnClick();
     }
 
     public void Next()
     {
         skillSet();
-        int[] ran = new int[3];
-        while (true)
-        {
-            ran[0] = Random.Range(0, skills.Count);
-            ran[1] = Random.Range(0, skills.Count);
-            ran[2] = Random.Range(0, skills.Count);
+        HashSet<int> ran = new HashSet<int>();
 
-            if (ran[0] != ran[1] && ran[1] != ran[2] && ran[0] != ran[2])
-                break;
+        if (skills.Count < 3 && !isDestroy)
+        {
+            isDestroy = true;
+            StartCoroutine(destroyCoroutine());
         }
 
-        for (int i = 0; i < ran.Length; i++)
-        {
-            SkillInfo ranSkill = choices[i];
-            ranSkill.init(skills[ran[i]]);
+        while (ran.Count < Mathf.Min(3, skills.Count))
+            ran.Add(Random.Range(0, skills.Count));
+
+        int cnt = 0;
+        foreach (int r in ran) {       
+            SkillInfo ranSkill = choices[cnt++];
+            ranSkill.init(skills[r]);
         }
     }
 
@@ -124,6 +121,17 @@ public class LevelUp : MonoBehaviour
                     break;
             }
         }
+        if (skills.Count < 3)
+        {
+            Skill tmp1 = new Skill();
+            Skill tmp2 = new Skill();
+            tmp1.index = -1;
+            tmp2.index = -1;
+            tmp1.sk_name = "정령의 회복약";
+            tmp2.sk_name = "골드 상자";
+            skills.Add(tmp1);
+            skills.Add(tmp2);
+        }
 
         string str = "랜덤 스킬 목록 : ";
         foreach(Skill skill in skills)
@@ -132,10 +140,10 @@ public class LevelUp : MonoBehaviour
         print(str);
     }
 
-    public void activeRefill()
+    IEnumerator destroyCoroutine()
     {
-        foreach(Skill sk in Skill.GetList())
-            if (sk.sk_type != SkillType.액티브 && !GameManager.instance.active.ContainsKey(sk.index))
-                skills.Add(sk);
+        Destroy(choices[choices.Length - 1].gameObject);
+        yield return new WaitForSeconds(0.5f);
+        choices = GetComponentsInChildren<SkillInfo>();
     }
 }

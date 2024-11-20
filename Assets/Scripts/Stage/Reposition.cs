@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Reposition : MonoBehaviour
 {
-    int size = 20;
+    int size = 40;
     Collider2D col;
 
     void Awake()
@@ -30,12 +30,10 @@ public class Reposition : MonoBehaviour
                 diffX = Mathf.Abs(diffX);
                 diffY = Mathf.Abs(diffY);
 
-                if (diffX > diffY){
+                if (diffX > diffY)
                     transform.Translate(Vector2.right * dirX * size*2);
-                }
-                else if (diffX < diffY) {
+                else if (diffX < diffY)
                     transform.Translate(Vector2.up * dirY * size*2);
-                }
                 break;
 
             case "Enemy" :

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SkillPause : MonoBehaviour
 {
-    Text name;
+    Text skillName;
     Image icon;
     Image[] Lv;
 
@@ -13,7 +13,7 @@ public class SkillPause : MonoBehaviour
 
     private void Awake()
     {
-        name = GetComponentInChildren<Text>();
+        skillName = GetComponentInChildren<Text>();
 
         Image[] tmp = GetComponentsInChildren<Image>(true);
         icon = tmp[1];
@@ -25,6 +25,7 @@ public class SkillPause : MonoBehaviour
 
     public void init(Skill skill, int lv)
     {
+        
         //아이콘 변경
         Color color = icon.color;
         if (skill == null)
@@ -40,7 +41,7 @@ public class SkillPause : MonoBehaviour
 
 
         //이름 변경
-        name.text = skill!=null ? skill.sk_name : "";
+        skillName.text = skill!=null ? skill.sk_name : "";
 
         //레벨 
         if (skill != null && skill.sk_type == SkillType.진화)

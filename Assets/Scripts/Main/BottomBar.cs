@@ -5,12 +5,14 @@ using UnityEngine.UI;
 
 public class BottomBar : MonoBehaviour
 {
-    Vector2 size = new Vector2(25, 20);
+    Vector2 basic;
     Button[] buttons;
 
     public Transform page;
 
     private void Awake() {
+        basic = transform.GetChild(0).GetComponent<RectTransform>().sizeDelta;
+
         buttons = gameObject.GetComponentsInChildren<Button>();
         for(int i=0; i<buttons.Length; i++){
             int idx = i;
@@ -28,11 +30,11 @@ public class BottomBar : MonoBehaviour
         //버튼 크기 조정
         foreach(Button button in buttons){
             button.interactable = true;
-            button.gameObject.GetComponent<RectTransform>().sizeDelta = size;
+            button.gameObject.GetComponent<RectTransform>().sizeDelta = basic;
         }
 
         buttons[num].interactable = false;
-        buttons[num].gameObject.GetComponent<RectTransform>().sizeDelta *= 1.3f;
+        buttons[num].gameObject.GetComponent<RectTransform>().sizeDelta *= 1.5f;
 
         //화면 전환 추가 예정
         for (int i=0; i<page.childCount; i++)
