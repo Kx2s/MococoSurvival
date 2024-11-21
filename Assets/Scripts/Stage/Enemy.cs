@@ -69,23 +69,23 @@ public class Enemy : MonoBehaviour
     {
         if (GameManager.instance.gameTime < chageTime)
         {
-            anim.runtimeAnimatorController = animCon[GameManager.instance.stage * 3];
+            anim.runtimeAnimatorController = animCon[GameManager.instance.stage / 3];
         }
         else if (GameManager.instance.gameTime < 2 * chageTime)
         {
-            anim.runtimeAnimatorController = animCon[GameManager.instance.stage * 3 + 1];
+            anim.runtimeAnimatorController = animCon[GameManager.instance.stage / 3 + 1];
         }
         else
         {
-            anim.runtimeAnimatorController = animCon[GameManager.instance.stage * 3 + 2];
+            anim.runtimeAnimatorController = animCon[GameManager.instance.stage / 3 + 2];
         }
 
-        attack = 10;
+        attack = 5;
         speed = 1.5f;
         maxHealth = 50;
         exp = 1;
-        maxHealth *= Mathf.Pow(10, GameManager.instance.stage) + Mathf.Pow(1.08f, GameManager.instance.gameTime / 10)-1;
-        attack *= Mathf.Pow(10, GameManager.instance.stage) + Mathf.Pow(1.05f, GameManager.instance.gameTime / 10)-1;
+        maxHealth *= GameManager.instance.stage * 5 + Mathf.Pow(1.08f, GameManager.instance.gameTime / 10);
+        attack *= GameManager.instance.stage * 5 + Mathf.Pow(1.05f, GameManager.instance.gameTime / 10);
 
         int ran = Random.Range(0, 100);
 

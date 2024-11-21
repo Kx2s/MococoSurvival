@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -57,8 +56,10 @@ public class GameManager : MonoBehaviour
     public float maxGameTime = 2 * 10f;
 
     [Header("# Game Object")]
-    public GameObject enemyCleaner;
+    public GameObject hit;
     public GameObject pause;
+    public GameObject enemyCleaner;
+    public Collider2D[] coll;
     public HUD hud;
     public Player player;
     public PoolManager pool;
@@ -110,6 +111,13 @@ public class GameManager : MonoBehaviour
         if (value < 0)
             health += value;
         hud.uiHealth();
+
+
+        coll[0].enabled = false;
+        coll[1].enabled = true;
+        player.spriter.color = Color.gray;
+        hit.SetActive(true);
+        StartCoroutine(colliderCoroutine(0.5f));
     }
 
 
@@ -145,6 +153,7 @@ public class GameManager : MonoBehaviour
         passive = new Dictionary<int, int>();
         active = new Dictionary<int, int>();
         stage = PlayerPrefs.GetInt("Stage");
+        coll = player.GetComponentsInChildren<Collider2D>();
     }
 
     public void Start()
@@ -175,7 +184,6 @@ public class GameManager : MonoBehaviour
     {
         int total = PlayerPrefs.GetInt("Gold") + Gold;
         PlayerPrefs.SetInt("Gold", total);
-        PlayerPrefs.SetInt("nowStage", Math.Max(stage+1, PlayerPrefs.GetInt("nowStage")));
     }
 
 
@@ -213,6 +221,7 @@ public class GameManager : MonoBehaviour
     public void GameVictory()
     {
         Gold += 10000 * (stage + 1);
+        PlayerPrefs.SetInt("nowStage", Math.Max(stage + 1, PlayerPrefs.GetInt("nowStage")));
         StartCoroutine(GameVictoryRoutine());
     }
 
@@ -251,7 +260,7 @@ public class GameManager : MonoBehaviour
         isLive = true;
         Time.timeScale = 1;
         uiJoy.localScale = Vector3.one;
-        StartCoroutine(colliderCoroutine());
+        StartCoroutine(colliderCoroutine(1));
     }
 
     public void Pause()
@@ -275,9 +284,13 @@ public class GameManager : MonoBehaviour
         enemyCleaner.SetActive(false);
     }
 
-    IEnumerator colliderCoroutine()
+    IEnumerator colliderCoroutine(float sec)
     {
-        yield return new WaitForSeconds(1);
-        player.GetComponent<Collider2D>().enabled = true;
+
+        yield return new WaitForSeconds(sec);
+        coll[1].enabled = false;
+        coll[0].enabled = true;
+        player.spriter.color = Color.white;
+        hit.SetActive(false);
     }
 }

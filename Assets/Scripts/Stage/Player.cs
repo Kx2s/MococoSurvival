@@ -7,10 +7,10 @@ public class Player : MonoBehaviour
 {
     Animator anim;
     Rigidbody2D rigid;
-    SpriteRenderer spriter;
 
     public Vector2 inputVec;
     public Hand[] hands;
+    public SpriteRenderer spriter;
     public VariableJoystick joystick;
     public RuntimeAnimatorController[] animCon;
 
@@ -53,15 +53,15 @@ public class Player : MonoBehaviour
         GameManager.instance.Pause();
     }
 
-    void OnCollisionStay2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         if (!GameManager.instance.isLive)
             return;
 
-        GameManager.instance.subHealth(Time.deltaTime * collision.gameObject.GetComponent<Enemy>().attack * (100 - GameManager.instance.Reduces) / 100);
+        GameManager.instance.subHealth(collision.gameObject.GetComponent<Enemy>().attack * (100 - GameManager.instance.Reduces) / 100);
         Vibration.Vibrate(50);
         if (GameManager.instance.health <= 0) {
-            for (int i=2; i<transform.childCount; i++) {
+            for (int i=3; i<transform.childCount; i++) {
                 transform.GetChild(i).gameObject.SetActive(false);
             }
 

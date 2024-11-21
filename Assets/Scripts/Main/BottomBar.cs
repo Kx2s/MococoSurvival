@@ -11,7 +11,6 @@ public class BottomBar : MonoBehaviour
     public Transform page;
 
     private void Awake() {
-        basic = transform.GetChild(0).GetComponent<RectTransform>().sizeDelta;
 
         buttons = gameObject.GetComponentsInChildren<Button>();
         for(int i=0; i<buttons.Length; i++){
@@ -30,11 +29,11 @@ public class BottomBar : MonoBehaviour
         //버튼 크기 조정
         foreach(Button button in buttons){
             button.interactable = true;
-            button.gameObject.GetComponent<RectTransform>().sizeDelta = basic;
+            button.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
         }
 
         buttons[num].interactable = false;
-        buttons[num].gameObject.GetComponent<RectTransform>().sizeDelta *= 1.5f;
+        buttons[num].gameObject.GetComponent<RectTransform>().localScale *= 1.3f;
 
         //화면 전환 추가 예정
         for (int i=0; i<page.childCount; i++)
