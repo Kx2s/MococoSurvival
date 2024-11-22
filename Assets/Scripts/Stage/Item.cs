@@ -13,9 +13,7 @@ public class Item : MonoBehaviour
         if (collision.tag != "Player")
             return;
 
-        //에테르 포식자 추가예정
-
-
+        GameManager.instance.audioManager.PlaySfx(Sfx.Gain);
         switch (type)
         {
             case ItemT.Bomb:
@@ -42,7 +40,6 @@ public class Item : MonoBehaviour
 
     public void Gold()
     {
-        print(GameManager.instance.stage + 1);
         GameManager.instance.addGold(100 * (GameManager.instance.stage+1));
     }
 }

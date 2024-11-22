@@ -72,25 +72,20 @@ public class AudioManager : MonoBehaviour
     }
 
     public void PlaySfx (Sfx sfx) {
-        for (int i=0; i<sfxPlayers.Length; i++){
+        for (int i = 0; i < sfxPlayers.Length; i++)
+        {
             int loopIndex = (i + channelIndex) % sfxPlayers.Length;
 
             if (sfxPlayers[loopIndex].isPlaying)
                 continue;
 
             int ranIndex = 0;
-            if (sfx == Sfx.Hit){
+            if (sfx == Sfx.Hit)
+            {
                 ranIndex = Random.Range(0, 2);
             }
 
-            if (sfx == Sfx.Win)
-            {
-                sfxPlayers[loopIndex].volume = 1;
-            }
-            else
-            {
-                sfxPlayers[loopIndex].volume = sfxVolum;
-            }
+            sfxPlayers[loopIndex].volume = sfxVolum;
 
             channelIndex = loopIndex;
             sfxPlayers[loopIndex].clip = sfxClips[(int)sfx + ranIndex];

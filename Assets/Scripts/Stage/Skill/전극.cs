@@ -8,7 +8,7 @@ public class 전극 : Skill_Active
     Collider2D coll;
 
     WaitForSeconds on = new WaitForSeconds(0.1f);
-    WaitForSeconds off = new WaitForSeconds(1f);
+    WaitForSeconds off = new WaitForSeconds(.3f);
 
     private void Awake()
     {
@@ -36,9 +36,9 @@ public class 전극 : Skill_Active
 
 
             coll.enabled = true;
-            yield return off;
-            coll.enabled = false;
             yield return on;
+            coll.enabled = false;
+            yield return off;
         }
     }
 

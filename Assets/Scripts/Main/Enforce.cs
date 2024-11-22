@@ -15,6 +15,8 @@ public class Enforce : MonoBehaviour
     Button btn;
     Equipment equipment;
 
+    public AudioManager audioManager;
+
     private void Awake()
     {
         btn = GetComponentsInChildren<Button>()[1];
@@ -84,7 +86,7 @@ public class Enforce : MonoBehaviour
             str_effect = "공격력 +";
         else
             str_effect = "체력 +";
-        texts[3].text = str_effect + (100 + upNum * 1000 + forceNum * 10);
+        texts[3].text = str_effect + (100 + upNum * 1000 + forceNum * 50);
 
         //확률
         texts[4].text = per[forceNum] + "%";
@@ -120,20 +122,29 @@ public class Enforce : MonoBehaviour
     {
         int ran = Random.Range(0, 1000);
         Save.instace.GoldSet(-100 * (forceNum + 1));
-
-        print((ran <= per[forceNum]*10) + " : " + ran + " / " + per[forceNum]*10);
         //성공시
-        if (ran <= per[forceNum]*10)
+        if (ran <= per[forceNum] * 10)
         {
             //사운드 + 이펙트?
+            audioManager.PlaySfx(Sfx.Success);
             forceNum++;
         }
         //실패시
         else
         {
+            audioManager.PlaySfx(Sfx.Fail);
             //사운드 + 이펙트?
 
         }
+        StartCoroutine(activeCoroutine());
         init();
+        btn.interactable = false;
+    }
+
+
+    IEnumerator activeCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+        btn.interactable = true;
     }
 }

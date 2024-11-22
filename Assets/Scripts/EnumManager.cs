@@ -6,7 +6,7 @@ namespace EnumManager
     public enum Equipment { Head, Chest, Leg, Hand, Shoulder, Weapon };
     public enum ItemT { Bomb, Gold, Heal};
 
-    public enum Sfx { Dead, Hit, LevelUp = 3, Lose, Mode, Select, Win, Enter, Refuse}
+    public enum Sfx { Dead, Hit, LevelUp = 3, Lose, Mode, Select, Win, Enter, Refuse, Success, Fail, Gain}
 
 
 }

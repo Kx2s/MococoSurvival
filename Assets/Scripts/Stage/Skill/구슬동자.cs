@@ -25,16 +25,16 @@ public class 구슬동자 : Skill_Active
         while (true)
         {
             Vector3 dir = Random.insideUnitCircle.normalized;
-            int ran = Random.Range(0, 10);
+            int ran = Random.Range(0, 100);
 
             GameObject item = null;
 
             //폭탄
-            if (ran < 1)
+            if (ran < 5)
                 item = GameManager.instance.pool.Get(5);
 
             //회복
-            else if (ran < 5)
+            else if (ran < 30)
                 item = GameManager.instance.pool.Get(6);
 
             //골드

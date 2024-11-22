@@ -5,10 +5,17 @@ using UnityEngine;
 
 public class Grenade : MonoBehaviour
 {
+    Collider2D coll;
+
     public int type;
     public int level;
     public Vector3 dir;
     public Skill skill;
+
+    private void Awake()
+    {
+        coll = GetComponentInChildren<Collider2D>(true);
+    }
 
     private void OnEnable()
     {
@@ -33,7 +40,15 @@ public class Grenade : MonoBehaviour
         }
         transform.GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).gameObject.SetActive(true);
-        yield return new WaitForSeconds(type == 0 ? 0.5f : 3+level);
+
+        int sec = type == 0 ? 1 : (3 + level)*2;
+        for (int i =0; i <sec; i++)
+        {
+            coll.enabled = true;
+            yield return new WaitForSeconds(.1f);
+            coll.enabled = false;
+            yield return new WaitForSeconds(.3f);
+        }
 
         gameObject.SetActive(false);
         transform.GetChild(0).gameObject.SetActive(true);

@@ -8,7 +8,7 @@ public class Character : MonoBehaviour
         get
         {
             int attack = 100;
-            attack += 10 * (PlayerPrefs.GetInt("Weapon"));
+            attack += 50 * (PlayerPrefs.GetInt("Weapon"));
             return attack;
         }
     }
@@ -20,7 +20,7 @@ public class Character : MonoBehaviour
             int hp = 100;
             int sum = PlayerPrefs.GetInt("Head") + PlayerPrefs.GetInt("Chest")
                 + PlayerPrefs.GetInt("Leg") + PlayerPrefs.GetInt("Hand") + PlayerPrefs.GetInt("Shoulder") + 1;
-            hp += 10 * sum;
+            hp += 50 * sum;
             return hp;
         }
     }

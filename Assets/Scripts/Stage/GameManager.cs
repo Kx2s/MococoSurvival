@@ -66,7 +66,9 @@ public class GameManager : MonoBehaviour
     public LevelUp uiLevelUp;
     public Result uiResult;
     public Transform uiJoy;
+    public AudioManager audioManager;
     public AchiveManager achiveManager;
+
     public float exp
     {
         get { return Exp; }
@@ -253,6 +255,7 @@ public class GameManager : MonoBehaviour
         isLive = false;
         Time.timeScale = 0;
         uiJoy.localScale = Vector3.zero;
+        player.GetComponent<Collider2D>().enabled = false;
     }
 
     public void Resume()
@@ -267,7 +270,6 @@ public class GameManager : MonoBehaviour
     {
         if (!isLive)
             return;
-        player.GetComponent<Collider2D>().enabled = false;
         Stop();
         pause.SetActive(true);
     }

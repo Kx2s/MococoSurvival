@@ -85,7 +85,7 @@ public class Enemy : MonoBehaviour
         maxHealth = 50;
         exp = 1;
         maxHealth *= GameManager.instance.stage * 5 + Mathf.Pow(1.08f, GameManager.instance.gameTime / 10);
-        attack *= GameManager.instance.stage * 5 + Mathf.Pow(1.05f, GameManager.instance.gameTime / 10);
+        attack *= GameManager.instance.stage * 25 + Mathf.Pow(1.05f, GameManager.instance.gameTime / 10);
 
         int ran = Random.Range(0, 100);
 
@@ -93,7 +93,7 @@ public class Enemy : MonoBehaviour
         if (ran < 3)
         {
             ColorUtility.TryParseHtmlString("#444444", out color);
-            maxHealth *= 2;
+            maxHealth *= 5;
             exp = 2;
         }
         else if (ran < 6)
@@ -105,7 +105,7 @@ public class Enemy : MonoBehaviour
         else if (ran < 9)
         {
             ColorUtility.TryParseHtmlString("#FF6460", out color);
-            attack *= 2;
+            attack *= 3;
             exp = 2;
         }
         spriter.color = color;
