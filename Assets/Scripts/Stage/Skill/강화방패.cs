@@ -23,7 +23,7 @@ public class 강화방패 : Skill_Active
     {
         while (true)
         {
-            float total = GameManager.instance.baseHealth * (skill.sk_bagic + skill.sk_increase * level) / 100;
+            float total = GameManager.instance.baseHealth * (skill.sk_bagic + skill.sk_increase * (level-1)) / 100;
             GameManager.instance.ShieldReset(total);
             print("shield reset");
 

@@ -93,7 +93,7 @@ public class Enforce : MonoBehaviour
 
         //골드
         int gold = Save.instace.GoldGet();
-        int need = 100 * (forceNum+1);
+        int need = 100 * (int)Mathf.Pow(2, forceNum);
         string str_gold = "<color=#";
 
         //버튼 활성화 포함
@@ -121,7 +121,7 @@ public class Enforce : MonoBehaviour
     public void Try()
     {
         int ran = Random.Range(0, 1000);
-        Save.instace.GoldSet(-100 * (forceNum + 1));
+        Save.instace.GoldSet(-100 * (int)Mathf.Pow(2, forceNum));
         //성공시
         if (ran <= per[forceNum] * 10)
         {
