@@ -91,8 +91,8 @@ public class LevelUp : MonoBehaviour
 
                 case SkillType.¾×Æ¼ºê:
                     if (!GameManager.instance.active.ContainsKey(sk.sk_upper[0]) &&
-                        (GameManager.instance.active.TryGetValue(sk.index, out level) && level < 5)
-                        || level == 0 && GameManager.instance.active.Count < 5)
+                        ((GameManager.instance.active.TryGetValue(sk.index, out level) && level < 5)
+                        || level == 0 && GameManager.instance.active.Count < 5))
                         skills.Add(sk);
                     break;
 

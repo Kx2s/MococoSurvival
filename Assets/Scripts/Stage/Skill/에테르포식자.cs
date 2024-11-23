@@ -21,7 +21,6 @@ public class 에테르포식자 : Skill_Active
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        print(collision.tag);
         if (collision.tag == "Item")
         {
             StartCoroutine(coroutine());

@@ -15,7 +15,6 @@ public class ShowDamage : MonoBehaviour
             tmp += "#FFDF24>";
         else
             tmp += "#FFFFFF>";
-        print(damage +" "+ damage/1000000);
         if (damage > 1000000)
             tmp += string.Format("{0:N1} m", damage / 1000000);
         else if (damage > 1000)
