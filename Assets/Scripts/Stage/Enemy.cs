@@ -84,8 +84,8 @@ public class Enemy : MonoBehaviour
         speed = 1.5f;
         maxHealth = 50;
         exp = 1;
-        maxHealth *= GameManager.instance.stage * 5 + Mathf.Pow(1.08f, GameManager.instance.gameTime / 10);
-        attack *= GameManager.instance.stage * 25 + Mathf.Pow(1.05f, GameManager.instance.gameTime / 10);
+        maxHealth *= GameManager.instance.stage * 10 + Mathf.Pow(1.08f, GameManager.instance.gameTime / 10);
+        attack *= GameManager.instance.stage * 30 + Mathf.Pow(1.05f, GameManager.instance.gameTime / 10);
 
         int ran = Random.Range(0, 100);
 
