@@ -23,7 +23,7 @@ public class PoolManager : MonoBehaviour
                 item.SetActive(true);
                 return item;
             }
-        if (cnt == 500)
+        if (cnt == 1000)
             return null;
         
         GameObject select = Instantiate(prefabs[idx], transform);
