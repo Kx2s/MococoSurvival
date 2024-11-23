@@ -28,7 +28,6 @@ public class Enforce : MonoBehaviour
 
     private void OnEnable()
     {
-        forceNum = PlayerPrefs.GetInt($"{equipment}");
         upNum = PlayerPrefs.GetInt($"{equipment}Up");
 
         //장비 아이콘
@@ -115,6 +114,7 @@ public class Enforce : MonoBehaviour
     {
         equipment = (Equipment)value;
         gameObject.SetActive(true);
+        forceNum = Save.instace.equipments[(int)equipment];
         init();
     }
 

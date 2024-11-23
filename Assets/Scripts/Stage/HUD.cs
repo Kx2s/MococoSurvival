@@ -36,7 +36,7 @@ public class HUD : MonoBehaviour
     {
         int min = Mathf.FloorToInt(GameManager.instance.gameTime / 60);
         int sec = Mathf.FloorToInt(GameManager.instance.gameTime % 60);
-        myText[(int)textType.Time].text = string.Format("{0:D2}:{1:D2}", min, sec);
+        myText[(int)textType.Time].text = string.Format("{0:D2}:{1:D2}/09:00", min, sec);
     }
 
     public void uiHealth()
