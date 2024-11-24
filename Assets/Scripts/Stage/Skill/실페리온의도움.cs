@@ -39,13 +39,14 @@ public class 실페리온의도움 : Skill_Active
                 float ran = Random.Range(0f, 4f);
 
                 Transform child = effects.GetChild(i);
-                child.position = dir * ran;
+                child.localPosition = dir * ran;
                 child.parent = null;
                 child.localScale = Vector3.one * 0.5f * (GameManager.instance.Range + 2);
                 child.parent = effects;
             }
 
             effects.position = transform.position;
+            print(transform.position);
             effects.gameObject.SetActive(true);
             yield return new WaitForSeconds(1f);
             effects.gameObject.SetActive(false);
