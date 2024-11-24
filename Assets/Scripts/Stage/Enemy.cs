@@ -119,19 +119,19 @@ public class Enemy : MonoBehaviour
         //데미지 적용
         int ran = Random.Range(0, 100);
         float cri = ran <= GameManager.instance.Critical ? 1.5f : 1;
-        int total = (int)(GameManager.instance.Attack * damage/100 * cri);
-        health -= total;
+        float total = GameManager.instance.Attack * damage/100 * cri;
         
-        if (total > 999999999)
+        if (total > 1000000000)
         {
             cri = 1;
-            total = 999999999;
+            total = 1000000000;
         }
+        health -= total;
         show.Hit(total, cri != 1);
 
         StartCoroutine(KnockBack());
 
-        if (health > 0)
+        if (health > 0 && maxHealth >= health)
         {
             anim.SetTrigger("Hit");
             AudioManager.instance.PlaySfx(Sfx.Hit);

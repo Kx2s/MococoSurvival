@@ -7,7 +7,7 @@ public class ShowDamage : MonoBehaviour
 {
 
     public GameObject damageObject;
-    public void Hit(int damage, bool isCritical)
+    public void Hit(float damage, bool isCritical)
     {
         GameObject g = Get();
         string tmp = "<color=";
@@ -16,9 +16,14 @@ public class ShowDamage : MonoBehaviour
         else
             tmp += "#FFFFFF>";
         if (damage > 1000000)
-            tmp += string.Format("{0:N1} m", damage / 1000000);
+        {
+            if (damage == 1000000000)
+                tmp += string.Format("{0:F1} m", (damage / 1000000) - 1);
+            else
+                tmp += string.Format("{0:F1} m", damage / 1000000);
+        }
         else if (damage > 1000)
-            tmp += string.Format("{0:N1} k", damage / 1000);
+            tmp += string.Format("{0:F1} k", damage / 1000);
         else
             tmp += damage;
         tmp += "</color>";
