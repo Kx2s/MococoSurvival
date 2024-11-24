@@ -32,14 +32,19 @@ public class Player : MonoBehaviour
         if (!GameManager.instance.isLive)
             return;
 
-        anim.SetFloat("Speed", joystick.Direction.magnitude);
-        if (joystick.Direction.x != 0){
-            spriter.flipX = joystick.Direction.x < 0 ;
+        if (joystick.gameObject.activeSelf)
+        {
+            inputVec = joystick.Direction.normalized;
+        }
+
+        anim.SetFloat("Speed", inputVec.magnitude);
+        if (inputVec.x != 0){
+            spriter.flipX = inputVec.x < 0 ;
             foreach (Hand hand in hands)
                 hand.setHand(spriter.flipX);
         }
 
-        Vector2 nextVec = joystick.Direction.normalized * GameManager.instance.Speed * Time.deltaTime;
+        Vector2 nextVec = inputVec * GameManager.instance.Speed * Time.deltaTime;
         rigid.MovePosition(rigid.position + nextVec);
     }
 
@@ -57,9 +62,9 @@ public class Player : MonoBehaviour
     {
         if (!GameManager.instance.isLive)
             return;
-
+        if(Application.platform == RuntimePlatform.Android)
+            Vibration.Vibrate(50);
         GameManager.instance.subHealth(collision.gameObject.GetComponent<Enemy>().attack * (100 - GameManager.instance.Reduces) / 100);
-        Vibration.Vibrate(50);
         if (GameManager.instance.health <= 0) {
             for (int i=3; i<transform.childCount; i++) {
                 transform.GetChild(i).gameObject.SetActive(false);

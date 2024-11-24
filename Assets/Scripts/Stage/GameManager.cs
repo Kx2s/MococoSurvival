@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -51,6 +52,7 @@ public class GameManager : MonoBehaviour
     [Header("# Game Control")]
     public bool isLive;
     public int stage;
+    public bool joyActive;
     [SerializeField]
     private float time;
     public float maxGameTime = 2 * 10f;
@@ -61,6 +63,7 @@ public class GameManager : MonoBehaviour
     public GameObject enemyCleaner;
     public Collider2D[] coll;
     public HUD hud;
+    public Toggle toggle;
     public Player player;
     public PoolManager pool;
     public LevelUp uiLevelUp;
@@ -147,6 +150,12 @@ public class GameManager : MonoBehaviour
         hud.uiHealth();
     }
 
+    public void JoySet(bool tf)
+    {
+        uiJoy.gameObject.SetActive(tf);
+        joyActive = tf;
+    }
+
     void Awake()
     {
         instance = this;
@@ -156,6 +165,8 @@ public class GameManager : MonoBehaviour
         active = new Dictionary<int, int>();
         stage = PlayerPrefs.GetInt("Stage");
         coll = player.GetComponentsInChildren<Collider2D>();
+
+        toggle.isOn = PlayerPrefs.GetInt("Joy") == 1;
     }
 
     public void Start()
@@ -186,6 +197,7 @@ public class GameManager : MonoBehaviour
     {
         int total = PlayerPrefs.GetInt("Gold") + Gold;
         PlayerPrefs.SetInt("Gold", total);
+        PlayerPrefs.SetInt("Joy", joyActive? 1 : 0);
     }
 
 

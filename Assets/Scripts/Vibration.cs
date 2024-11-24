@@ -16,8 +16,8 @@ public class Vibration
     {
         if (isAndroid())
             vibrator.Call("vibrate");
-        else
-            Handheld.Vibrate();
+        //else
+        //    Handheld.Vibrate();
     }
 
 
@@ -25,16 +25,17 @@ public class Vibration
     {
         if (isAndroid())
             vibrator.Call("vibrate", milliseconds);
-        else
-            Handheld.Vibrate();
+        //else
+        //    Handheld.Vibrate();
     }
 
     public static void Vibrate(long[] pattern, int repeat)
     {
+
         if (isAndroid())
             vibrator.Call("vibrate", pattern, repeat);
-        else
-            Handheld.Vibrate();
+        //else
+        //    Handheld.Vibrate();
     }
 
     public static bool HasVibrator()

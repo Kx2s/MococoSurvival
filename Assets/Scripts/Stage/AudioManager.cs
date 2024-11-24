@@ -24,6 +24,12 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
+        if (Application.platform != RuntimePlatform.Android)
+        {
+            bgmVolum /= 2;
+            sfxVolum /= 2;
+        }
+
         instance = this;
         Init();
     }
