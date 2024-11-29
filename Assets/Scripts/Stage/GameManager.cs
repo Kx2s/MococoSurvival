@@ -43,8 +43,6 @@ public class GameManager : MonoBehaviour
     public float ExpBoost;
     public float GoldBoost;
 
-    public int playerId; //삭제예정
-
     public Dictionary<int, int> passive;
     public Dictionary<int, int> active;
 
@@ -154,6 +152,7 @@ public class GameManager : MonoBehaviour
     {
         uiJoy.gameObject.SetActive(tf);
         joyActive = tf;
+        print(tf);
     }
 
     void Awake()
@@ -166,7 +165,7 @@ public class GameManager : MonoBehaviour
         stage = PlayerPrefs.GetInt("Stage");
         coll = player.GetComponentsInChildren<Collider2D>();
 
-        toggle.isOn = PlayerPrefs.GetInt("Joy") == 1;
+        JoySet(PlayerPrefs.GetInt("Joy")==1);
     }
 
     public void Start()
@@ -177,8 +176,6 @@ public class GameManager : MonoBehaviour
         baseAttack = Character.Attack;
         baseSpeed = 3;
 
-
-        playerId = 0;
         health = baseHealth;
         Attack = baseAttack;
         Speed = baseSpeed;

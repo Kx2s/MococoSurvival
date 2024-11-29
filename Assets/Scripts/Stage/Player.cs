@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     public Hand[] hands;
     public SpriteRenderer spriter;
     public VariableJoystick joystick;
-    public RuntimeAnimatorController[] animCon;
+    public RuntimeAnimatorController animCon;
 
     void Awake()
     {
@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
 
     void OnEnable()
     {
-        anim.runtimeAnimatorController = animCon[GameManager.instance.playerId];
+        anim.runtimeAnimatorController = animCon;
     }
     
     void FixedUpdate()
@@ -62,8 +62,7 @@ public class Player : MonoBehaviour
     {
         if (!GameManager.instance.isLive)
             return;
-        if(Application.platform == RuntimePlatform.Android)
-            Vibration.Vibrate(50);
+        
         GameManager.instance.subHealth(collision.gameObject.GetComponent<Enemy>().attack * (100 - GameManager.instance.Reduces) / 100);
         if (GameManager.instance.health <= 0) {
             for (int i=3; i<transform.childCount; i++) {
@@ -73,6 +72,8 @@ public class Player : MonoBehaviour
             anim.SetTrigger("Dead");
             GameManager.instance.GameOver();
         }
+
+        Vibration.Vibrate(50);
     }
 
     public void DeadAnim()

@@ -5,4 +5,8 @@ using UnityEngine.UI;
 
 public class JoySet : MonoBehaviour
 {
+    private void Awake()
+    {
+        GetComponent<Toggle>().isOn = PlayerPrefs.GetInt("Joy") == 1;
+    }
 }
